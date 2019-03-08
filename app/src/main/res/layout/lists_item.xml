@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/text_padding"
+    android:paddingStart="@dimen/text_padding"
+    android:background="@color/bgPage"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/item_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:textColor="@color/textDate"
+        android:textSize="@dimen/text_size"
+        android:textAlignment="center"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="12"
+        android:textColor="@color/textTitle"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        android:paddingHorizontal="@dimen/text_padding"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/item_undone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/textUndone"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/item_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/textTotal"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:src="@drawable/ic_arrow_right"
+        android:layout_gravity="center" />
+
+</LinearLayout>
