@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         if (view == null) {
             childView = new HolderView();
             view = mInflater.inflate(R.layout.activity_inventory_child, viewGroup, false);
+            childView.checkBoxImgView = (ImageView) view.findViewById(R.id.child_checkboximg);
             childView.textView = (TextView) view.findViewById(R.id.child_text);
             childView.quantityTextView = (TextView) view.findViewById(R.id.child_quantity);
             view.setTag(childView); // Cache in view
@@ -53,12 +55,19 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             childView = (HolderView) view.getTag();
         }
 
+        int done = parent_list.get(i).getChild_list().get(i1).getDone();
+        if (done == 1) {
+            childView.checkBoxImgView.setImageResource(R.drawable.ic_check_box_black_24dp);
+        } else {
+            childView.checkBoxImgView.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
+        }
         childView.textView.setText(parent_list.get(i).getChild_list().get(i1).getText());
         childView.quantityTextView.setText("✖"+String.valueOf(parent_list.get(i).getChild_list().get(i1).getQuantity()));
 
         return view;
     }
     private class HolderView { // Child View class
+        ImageView checkBoxImgView;
         TextView textView;
         TextView quantityTextView;
     }
@@ -115,9 +124,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             holderViewParent = (HolderViewParent) view.getTag();
         }
 
-        String undone = String.valueOf(parent_list.get(i).getCount() - parent_list.get(i).getDoneCount());
+//        String undone = String.valueOf(parent_list.get(i).getCount() - parent_list.get(i).getDoneCount());
+        String done = String.valueOf(parent_list.get(i).getDoneCount());
         holderViewParent.categoryTextView.setText(parent_list.get(i).getCategory()
-                + " (" + undone + "/"
+                + " (" + done + "/"
                 + parent_list.get(i).getCount() + ")");
 
         return view;

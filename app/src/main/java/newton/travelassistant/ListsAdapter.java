@@ -34,6 +34,7 @@ public class ListsAdapter extends ArrayAdapter<Inventory> {
             viewHolder.inventoryTitle = (TextView) view.findViewById(R.id.item_title);
             viewHolder.inventoryTotal = (TextView) view.findViewById(R.id.item_total);
             viewHolder.inventoryUndone = (TextView) view.findViewById(R.id.item_undone);
+            view.setTag(viewHolder);
         } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag(); //Get viewHolder again.
