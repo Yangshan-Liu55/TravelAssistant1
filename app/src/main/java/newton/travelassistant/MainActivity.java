@@ -15,9 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -35,7 +38,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,7 +218,8 @@ public class MainActivity extends AppCompatActivity {
         addBuilder.setView(view);
 
         final EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        final EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        final TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -220,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.VISIBLE);
         date.setVisibility(View.VISIBLE);
+        dialog_add_datePicker.setVisibility(View.VISIBLE);
         category.setVisibility(View.GONE);
         text.setVisibility(View.GONE);
         quantity.setVisibility(View.GONE);
@@ -229,6 +237,26 @@ public class MainActivity extends AppCompatActivity {
         if (title.getText().toString().trim().equals("")) { //isEmpty()
                    title.setError("Input title");
         }
+
+        //setDatePicker();
+        // Current time: "yyyy-MM-dd HH:mm:ss"
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate =  new Date(System.currentTimeMillis());
+        String dateStr = formatter.format(curDate);
+        int cur_year = Integer.parseInt(dateStr.substring(0, 4));
+        int cur_month = Integer.parseInt(dateStr.substring(5, 7));
+        int cur_day = Integer.parseInt(dateStr.substring(8));
+//        Log.d(TAG, String.valueOf(cur_year)+"-"+String.valueOf(cur_month)+"-"+String.valueOf(cur_day));
+        dialog_add_datePicker.init(cur_year, cur_month, cur_day, new OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(i, i1, i2); // 获取一个日历对象，并初始化为当前选中的时间
+
+                date.setText(dateToString(i, i1, i2));
+//                Toast.makeText(MainActivity.this, "Chosen date: "+i+"-"+(i1+1)+"-"+i2, Toast.LENGTH_LONG).show();
+            }
+        });
 
         addBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -247,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         addBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
             }
         });
         addBuilder.show();
@@ -330,7 +358,8 @@ public class MainActivity extends AppCompatActivity {
         editBuilder.setView(view);
 
         final EditText editText_title = (EditText)view.findViewById(R.id.dialog_add_title);
-        final EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        final TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -338,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         editText_title.setVisibility(View.VISIBLE);
         date.setVisibility(View.VISIBLE);
+        dialog_add_datePicker.setVisibility(View.VISIBLE);
         category.setVisibility(View.GONE);
         text.setVisibility(View.GONE);
         quantity.setVisibility(View.GONE);
@@ -348,11 +378,25 @@ public class MainActivity extends AppCompatActivity {
         editText_title.setText(edit_inventory.getTitle());
         date.setText(edit_inventory.getDate());
 
-//        String edit_title = editText_title.getText().toString();
-//        final String b = date.getText().toString();
-//        if (edit_title.trim().equals("")) {
-//            editText_title.setError("Input title");
-//        }
+        //setDatePicker();
+        // Current time: "yyyy-MM-dd HH:mm:ss"
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate =  new Date(System.currentTimeMillis());
+        String dateStr = formatter.format(curDate);
+        int cur_year = Integer.parseInt(dateStr.substring(0, 4));
+        int cur_month = Integer.parseInt(dateStr.substring(5, 7));
+        int cur_day = Integer.parseInt(dateStr.substring(8));
+//        Log.d(TAG, String.valueOf(cur_year)+"-"+String.valueOf(cur_month)+"-"+String.valueOf(cur_day));
+        dialog_add_datePicker.init(cur_year, cur_month, cur_day, new OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(i, i1, i2); // 获取一个日历对象，并初始化为当前选中的时间
+
+                date.setText(dateToString(i, i1, i2));
+//                Toast.makeText(MainActivity.this, "Chosen date: "+i+"-"+(i1+1)+"-"+i2, Toast.LENGTH_LONG).show();
+            }
+        });
 
         editBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -370,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
         editBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
 //                editBuilder.setCancelable(true); // Default is true
             }
         });
@@ -397,7 +441,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private  void initMyLists() { // Firestore listener
+    private  void initMyLists() {
+        // Firestore listener
         // Check if Google Play Service has installed or updated
 //        showGooglePlayServicesStatus();
 
@@ -563,6 +608,57 @@ public class MainActivity extends AppCompatActivity {
         listsAdapter.notifyDataSetChanged();
     }
 
+    private String dateToString(int year, int month, int day) {
+        String yearStr = "", monthStr = "", dayStr = "";
+        yearStr = String.valueOf(year);
+        switch (month+1) {
+            case 1:
+                monthStr = "Jan";
+                break;
+            case 2:
+                monthStr = "Feb";
+                break;
+            case 3:
+                monthStr = "Mar";
+                break;
+            case 4:
+                monthStr = "Apr";
+                break;
+            case 5:
+                monthStr = "May";
+                break;
+            case 6:
+                monthStr = "Jun";
+                break;
+            case 7:
+                monthStr = "Jul";
+                break;
+            case 8:
+                monthStr = "Aug";
+                break;
+            case 9:
+                monthStr = "Sep";
+                break;
+            case 10:
+                monthStr = "Oct";
+                break;
+            case 11:
+                monthStr = "Nov";
+                break;
+            case 12:
+                monthStr = "Dec";
+                break;
+            default:
+                break;
+        }
+        if (day > 0 && day < 10) {
+            dayStr = "0" + String.valueOf(day);
+        } else {
+            dayStr = String.valueOf(day);
+        }
+        return monthStr + " " + dayStr + " " + yearStr;
+    }
+
     private String getRandomString(int length) { // Firestore user UID length: 28
         String base = "abcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
@@ -595,4 +691,5 @@ public class MainActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(authStateListener);
         }
     }
+
 }
