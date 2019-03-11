@@ -13,12 +13,20 @@
         android:hint="@string/hint_title"
         android:inputType="textNoSuggestions"/>
 
-    <EditText
+    <TextView
         android:id="@+id/dialog_add_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date"
-        android:inputType="textNoSuggestions"/>
+        android:hint="Choose date:"
+        android:textSize="@dimen/text_size"
+        android:padding="5dp"/>
+
+    <DatePicker
+        android:id="@+id/dialog_add_datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"/>
 
     <EditText
         android:id="@+id/dialog_add_category"

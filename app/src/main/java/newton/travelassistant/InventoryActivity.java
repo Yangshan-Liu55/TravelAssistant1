@@ -13,11 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -216,7 +218,8 @@ public class InventoryActivity extends AppCompatActivity {
         editBuilder.setView(view);
 
         EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         final EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         final EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -224,6 +227,7 @@ public class InventoryActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
+        dialog_add_datePicker.setVisibility(View.GONE);
         category.setVisibility(View.GONE);
         text.setVisibility(View.VISIBLE);
         quantity.setVisibility(View.VISIBLE);
@@ -267,7 +271,7 @@ public class InventoryActivity extends AppCompatActivity {
         editBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
             }
         });
         final AlertDialog builderShow = editBuilder.show(); // AlertDialog.Builder cannot dismiss
@@ -289,7 +293,8 @@ public class InventoryActivity extends AppCompatActivity {
         addBuilder.setView(view);
 
         EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         final EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         final EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -297,6 +302,7 @@ public class InventoryActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
+        dialog_add_datePicker.setVisibility(View.GONE);
         category.setVisibility(View.GONE);
         text.setVisibility(View.VISIBLE);
         quantity.setVisibility(View.VISIBLE);
@@ -340,7 +346,7 @@ public class InventoryActivity extends AppCompatActivity {
         addBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
             }
         });
         addBuilder.show();
@@ -354,7 +360,8 @@ public class InventoryActivity extends AppCompatActivity {
         editBuilder.setView(view);
 
         EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         final EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -362,6 +369,7 @@ public class InventoryActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
+        dialog_add_datePicker.setVisibility(View.GONE);
         category.setVisibility(View.VISIBLE);
         text.setVisibility(View.GONE);
         quantity.setVisibility(View.GONE);
@@ -391,7 +399,7 @@ public class InventoryActivity extends AppCompatActivity {
         editBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
             }
         });
         final AlertDialog builderShow = editBuilder.show(); // AlertDialog.Builder cannot dismiss
@@ -436,7 +444,8 @@ public class InventoryActivity extends AppCompatActivity {
         addBuilder.setView(view);
 
         EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        EditText date = (EditText)view.findViewById(R.id.dialog_add_date);
+        TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
         final EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
         EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
         EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
@@ -444,6 +453,7 @@ public class InventoryActivity extends AppCompatActivity {
         ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
+        dialog_add_datePicker.setVisibility(View.GONE);
         category.setVisibility(View.VISIBLE);
         text.setVisibility(View.GONE);
         quantity.setVisibility(View.GONE);
@@ -473,7 +483,7 @@ public class InventoryActivity extends AppCompatActivity {
         addBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(InventoryActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
             }
         });
         addBuilder.show();
