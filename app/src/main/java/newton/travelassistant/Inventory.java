@@ -3,7 +3,7 @@ package newton.travelassistant;
 import java.util.ArrayList;
 
 public class Inventory {
-    private String user, tripId, date, title;
+    private String user, userId, tripId, date, title;
     private ArrayList<ParentData> parent_data_list;
     private int total, done;
 
@@ -14,6 +14,9 @@ public class Inventory {
     // Getters
     public String getUser() {
         return user;
+    }
+    public String getUserId() {
+        return userId;
     }
     public String getTripId() {
         return tripId;
@@ -50,6 +53,9 @@ public class Inventory {
     // Setters
     public void setUser(String user) {
         this.user = user;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
     public void setTripId(String tripId) {
         this.tripId = tripId;

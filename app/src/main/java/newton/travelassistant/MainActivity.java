@@ -1,6 +1,5 @@
 package newton.travelassistant;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,24 +11,22 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
@@ -42,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -51,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private List<String> tripIdList = new ArrayList<String>();
     private ListsAdapter listsAdapter;
     private static final String TAG = "MainActivity";
-    private String userName = "admin";
+    private String userEmail;
+    private String userId;
     private FirebaseFirestore db;
     private  int list_position;
+    private FirebaseAuth.AuthStateListener authStateListener; //for onStop method
+    private FirebaseAuth mAuth; //for onStop method
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -85,6 +86,24 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        //check if log in
+        mAuth = FirebaseAuth.getInstance();//一定先实例化，否则onStart时add authStateListener报错
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user1 = firebaseAuth.getCurrentUser();
+                if (user1 != null) {
+                    //如果user为null 则无法获取String userEmail，系统bug出现app crash。所以下面这两句只能放在if函数里
+                    String user_email = user1.getEmail().toString();
+                    userEmail = user_email;
+//                    String currentUserName = userEmail.substring(0, userEmail.indexOf("@"));
+                }
+                else {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+            }
+        };
+
         // Set listView
         listsAdapter = new ListsAdapter(MainActivity.this, R.layout.lists_item, myLists);
         ListView myListView = (ListView)findViewById(R.id.my_list_view);
@@ -102,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("tripId", inventory.getTripId());
                 Bundle bundle = new Bundle();
                 bundle.putString("user", inventory.getUser());
+                bundle.putString("userId", inventory.getUserId());
                 bundle.putString("tripId", inventory.getTripId());
                 bundle.putString("date", inventory.getDate());
                 bundle.putString("title", inventory.getTitle());
@@ -129,7 +149,21 @@ public class MainActivity extends AppCompatActivity {
                 addList();
                 break;
             case R.id.lists_menu_login:
-                Toast.makeText(MainActivity.this, "Login", Toast.LENGTH_SHORT).show();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                }
+                else {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+
+//                if (userId == null || userId.isEmpty()) {
+//                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//                    startActivity(intent);
+//                } else {
+//                    startActivity(new Intent(MainActivity.this, AccountActivity.class));
+////                    Toast.makeText(MainActivity.this, "Login", Toast.LENGTH_SHORT).show();
+//                }
                 break;
             default:
                 break;
@@ -228,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
         Map<String, Object> categories = new HashMap<>();
         list.put("categories", categories);
 
-        db.collection("users").document(userName).collection("myLists")
+        db.collection("users").document(userId).collection("myLists")
                 .add(list)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -268,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         if(list_position >= 0) {
             String tripId = myLists.get(list_position).getTripId();
             if (!tripId.isEmpty()) {
-                db.collection("users").document(userName).collection("myLists")
+                db.collection("users").document(userId).collection("myLists")
                         .document(tripId)
                         .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -356,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         if(list_position >= 0) {
             String tripId = myLists.get(list_position).getTripId();
             if (!tripId.isEmpty()) {
-                db.collection("users").document(userName).collection("myLists")
+                db.collection("users").document(userId).collection("myLists")
                         .document(tripId)
                         .update("date", date,"title",title);
             }
@@ -364,13 +398,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void initMyLists() { // Firestore listener
+        // Check if Google Play Service has installed or updated
+//        showGooglePlayServicesStatus();
+
+        //check if log in
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            //如果user为null 则无法获取String userEmail，系统bug出现app crash。所以下面这两句只能放在if函数里
+            userEmail = currentUser.getEmail().toString();
+//                    String currentUserName = userEmail.substring(0, userEmail.indexOf("@"));
+            userId = currentUser.getUid();
+        }
+        else {
+            // Set guest userId
+            userId = "admin";
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+
         myLists.clear();
         tripIdList.clear();
         listsAdapter.notifyDataSetChanged(); // Update ListView，otherwise history remains on ListView
 
 //        FirebaseApp.initializeApp(getBaseContext()); //  classpath 'com.google.gms:google-services:4.2.0' because 4.1.0 has issue
         db = FirebaseFirestore.getInstance();
-        db.collection("users").document(userName).collection("myLists")
+        db.collection("users").document(userId).collection("myLists")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -387,7 +438,8 @@ public class MainActivity extends AppCompatActivity {
 
                             // Get Inventory data from document
                             Inventory temp_inventory = new Inventory(); // Loop must get new Inventory() to have new data
-                            temp_inventory.setUser(userName);
+                            temp_inventory.setUser(userEmail);
+                            temp_inventory.setUserId(userId);
                             temp_inventory.setTripId(document_id);
                             temp_inventory.setDate((String) document_map.get("date"));
                             temp_inventory.setTitle((String) document_map.get("title"));
@@ -432,13 +484,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initialiseMyLists() { // Firestore read/get data
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            //如果user为null 则无法获取String userEmail，系统bug出现app crash。所以下面这两句只能放在if函数里
+            userEmail = currentUser.getEmail().toString();
+//                    String currentUserName = userEmail.substring(0, userEmail.indexOf("@"));
+            userId = currentUser.getUid();
+        }
+        else {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+
         myLists.clear();
         tripIdList.clear();
 //        listsAdapter.notifyDataSetChanged(); // Update ListView，otherwise history remains on ListView
 
 //        FirebaseApp.initializeApp(getBaseContext()); //  classpath 'com.google.gms:google-services:4.2.0' because 4.1.0 has issue
         db = FirebaseFirestore.getInstance();
-        db.collection("users").document(userName).collection("myLists")
+        db.collection("users").document(userId).collection("myLists")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -452,7 +515,8 @@ public class MainActivity extends AppCompatActivity {
                                 Map<String, Object> document_map = documentSnapshot.getData();
 
                                 // Get Inventory data from document
-                                temp_inventory.setUser(userName);
+                                temp_inventory.setUser(userEmail);
+                                temp_inventory.setUserId(userId);
                                 temp_inventory.setTripId(document_id);
                                 temp_inventory.setDate((String) document_map.get("date"));
                                 temp_inventory.setTitle((String) document_map.get("title"));
@@ -475,19 +539,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void  setMyLists() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        userEmail = currentUser.getEmail().toString();
         myLists.clear();
         tripIdList.clear();
 //        listsAdapter.notifyDataSetChanged();
 
         Inventory inventory = new Inventory();
-        inventory.setUser(userName);
+        inventory.setUser(userEmail);
         inventory.setTripId("test1");
         inventory.setDate("2019-05-01");
         inventory.setTitle("Test1");
         inventory.setTotal(3);
         inventory.setDone(1);
         myLists.add(inventory);
-        inventory.setUser(userName);
+        inventory.setUser(userEmail);
         inventory.setTripId("test2");
         inventory.setDate("2019-08-01");
         inventory.setTitle("Test2");
@@ -495,5 +561,38 @@ public class MainActivity extends AppCompatActivity {
         inventory.setDone(4);
         myLists.add(inventory);
         listsAdapter.notifyDataSetChanged();
+    }
+
+    private String getRandomString(int length) { // Firestore user UID length: 28
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
+
+    private void showGooglePlayServicesStatus() {
+        GoogleApiAvailability apiAvail = GoogleApiAvailability.getInstance();
+        int errorCode = apiAvail.isGooglePlayServicesAvailable(this);
+        String msg = "Play Services: " + apiAvail.getErrorString(errorCode);
+        Log.d(TAG, msg);
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            mAuth.removeAuthStateListener(authStateListener);
+        }
     }
 }

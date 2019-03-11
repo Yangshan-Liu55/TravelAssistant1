@@ -1,6 +1,7 @@
 package newton.travelassistant;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -45,7 +46,6 @@ public class InventoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
-
 
         myExpandableListAdapter = new MyExpandableListAdapter(this, parent_list);
         myExListView = (ExpandableListView) findViewById(R.id.expandable_list);
@@ -97,7 +97,14 @@ public class InventoryActivity extends AppCompatActivity {
                 addCategory();
                 break;
             case R.id.lists_menu_login:
-                Toast.makeText(InventoryActivity.this, "Login", Toast.LENGTH_SHORT).show();
+                if ( inventory.getUserId() == null || inventory.getUserId().isEmpty()) {
+                    Intent intent = new Intent(InventoryActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    startActivity(new Intent(InventoryActivity.this, AccountActivity.class));
+                }
+
+//                Toast.makeText(InventoryActivity.this, "Login", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
@@ -473,7 +480,7 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     private void updateCategoryData() {
-        db.collection("users").document(inventory.getUser()).collection("myLists")
+        db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .update("categories", categories_map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -495,6 +502,7 @@ public class InventoryActivity extends AppCompatActivity {
 //        Bundle bundle = getIntent().getBundleExtra("inventoryBundle");
         Bundle bundle = getIntent().getExtras();
         inventory.setUser(bundle.getString("user"));
+        inventory.setUserId(bundle.getString("userId"));
         inventory.setTripId(bundle.getString("tripId"));
         inventory.setDate(bundle.getString("date"));
         inventory.setTitle(bundle.getString("title"));
@@ -512,7 +520,7 @@ public class InventoryActivity extends AppCompatActivity {
 //        myExpandableListAdapter.notifyDataSetChanged();
 
         db = FirebaseFirestore.getInstance();
-        db.collection("users").document(inventory.getUser()).collection("myLists")
+        db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -576,7 +584,7 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     private void updateTotalDoneData(int total, int done) {
-        db.collection("users").document(inventory.getUser()).collection("myLists")
+        db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .update("done", done,
                         "total", total)
@@ -598,6 +606,7 @@ public class InventoryActivity extends AppCompatActivity {
     private void setInventory() {
         Bundle bundle = getIntent().getExtras();
         inventory.setUser(bundle.getString("user"));
+        inventory.setUserId(bundle.getString("userId"));
         inventory.setTripId(bundle.getString("tripId"));
         inventory.setDate(bundle.getString("date"));
         inventory.setTitle(bundle.getString("title"));

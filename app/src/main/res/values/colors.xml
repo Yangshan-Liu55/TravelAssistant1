@@ -17,5 +17,6 @@
     <color name="textTotal">#90000000</color>
     <color name="textDisable">#1F000000</color>
     <color name="textWhite">#FFFFFF</color>
+    <color name="colorLink">#428bca</color>
 
 </resources>
