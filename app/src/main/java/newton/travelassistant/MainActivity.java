@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         //check if log in
         mAuth = FirebaseAuth.getInstance();//一定先实例化，否则onStart时add authStateListener报错
+
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     String user_email = user1.getEmail().toString();
                     userEmail = user_email;
 //                    String currentUserName = userEmail.substring(0, userEmail.indexOf("@"));
+                    userId = user1.getUid();
                 }
                 else {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -453,6 +455,7 @@ public class MainActivity extends AppCompatActivity {
             userEmail = currentUser.getEmail().toString();
 //                    String currentUserName = userEmail.substring(0, userEmail.indexOf("@"));
             userId = currentUser.getUid();
+            loadListsData();
         }
         else {
             // Set guest userId
@@ -460,6 +463,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
 
+
+    }
+    private void loadListsData() {
         myLists.clear();
         tripIdList.clear();
         listsAdapter.notifyDataSetChanged(); // Update ListView，otherwise history remains on ListView
