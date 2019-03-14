@@ -8,6 +8,7 @@
     <dimen name="activity_padding">30dp</dimen>
 
     <dimen name="text_size">18dp</dimen>
+    <dimen name="text_small_size">15sp</dimen>
     <dimen name="title_size">25dp</dimen>
     <dimen name="header_size">20dp</dimen>
     <dimen name="btn_size">36dp</dimen>

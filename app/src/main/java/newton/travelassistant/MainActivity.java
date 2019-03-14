@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             // Set guest userId
-            userId = "admin";
+//            userId = "admin@newton.com";
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
 

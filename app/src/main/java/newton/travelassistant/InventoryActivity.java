@@ -578,6 +578,13 @@ public class InventoryActivity extends AppCompatActivity {
                     }
 
                     myExpandableListAdapter.flashData(parent_list); // same myExpandableListAdapter.notifyDataSetChanged();
+                    // Expand all group items
+                    int groupCount = myExListView.getCount();
+                    if (groupCount > 0) {
+                        for (int i = 0; i < groupCount; i++) {
+                            myExListView.expandGroup(i);
+                        }
+                    }
 
                     inventory.setParent_data_list(parent_list); // for getting inventory.getTotal/getDone
                     int inventory_done = inventory.getDone();
