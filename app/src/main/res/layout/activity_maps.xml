@@ -12,49 +12,7 @@
         android:scrollbars="vertical"
         class="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <RadioGroup
-        android:id="@+id/radio_group_list_selector"
-        android:layout_width="120dp"
-        android:layout_height="260dp"
-        android:background="#80000000"
-        android:orientation="vertical"
-        android:padding="4dp">
 
-        <RadioButton
-            android:id="@+id/churches"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Churches"
-            android:textColor="@android:color/holo_green_light" />
-
-
-        <RadioButton
-            android:id="@+id/hotels"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Hotels"
-            android:textColor="@android:color/holo_green_light" />
-
-
-        <RadioButton
-            android:id="@+id/museums"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Museums"
-            android:textColor="@android:color/holo_green_light" />
-
-        <RadioButton
-            android:id="@+id/restaurants"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Restaurants"
-            android:textColor="@android:color/holo_green_light" />
-
-    </RadioGroup>
 </FrameLayout>
 
 
