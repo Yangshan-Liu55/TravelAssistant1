@@ -51,10 +51,11 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
-
+//flytt
     private List<Inventory> myLists = new ArrayList<Inventory>();
     private List<String> tripIdList = new ArrayList<String>();
     private ListsAdapter listsAdapter;
+
     private static final String TAG = "MainActivity";
     private String userEmail;
     private String userId;
@@ -62,30 +63,33 @@ public class MainActivity extends AppCompatActivity {
     private  int list_position;
     private FirebaseAuth.AuthStateListener authStateListener; //for onStop method
     private FirebaseAuth mAuth; //for onStop method
-    Fragment fragment = null;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    Intent mIntent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(mIntent);
                     return true;
-                case R.id.navigation_dashboard:
-                    // Start intent to dashboard activity
-                    return true;
+                case R.id.navigation_weather:
+                    selectedFragment = new WeatherFragment();
+                    break;
                 case R.id.navigation_currency:
-                    // Start intent to currency activity
-//                    fragment = new Curr
-                    return true;
+                    selectedFragment = new CurrencyFragment();
+                    break;
                 case R.id.navigation_map:
-
                     Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(intent);
                     return true;
             }
-            return false;
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    selectedFragment).commit();
+            return true;
         }
     };
 
@@ -94,8 +98,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+      //  getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+        //        new ListFragment()).commit();
 
         //check if log in
         mAuth = FirebaseAuth.getInstance();//一定先实例化，否则onStart时add authStateListener报错
@@ -117,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // Set listView
+        // Set listView Flytta
         listsAdapter = new ListsAdapter(MainActivity.this, R.layout.lists_item, myLists);
         ListView myListView = (ListView)findViewById(R.id.my_list_view);
         myListView.setAdapter(listsAdapter);
