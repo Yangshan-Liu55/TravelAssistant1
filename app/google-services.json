@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "21072326145",
+    "firebase_url": "https://travelassistant-5a7a5.firebaseio.com",
+    "project_id": "travelassistant-5a7a5",
+    "storage_bucket": "travelassistant-5a7a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21072326145:android:14d5342d580de4e6",
+        "android_client_info": {
+          "package_name": "newton.travelassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21072326145-c4p4aa0iaab88345n09308djh2gd3isd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "newton.travelassistant",
+            "certificate_hash": "64e751360eff267055ede8c1bb19cc1d6bc50ff6"
+          }
+        },
+        {
+          "client_id": "21072326145-30eolpjussekkquuc0da0gu0v5r7ghc4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbiYoR59Fie7fPNNBNTwNUi9zlSU7KIXE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "21072326145-30eolpjussekkquuc0da0gu0v5r7ghc4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

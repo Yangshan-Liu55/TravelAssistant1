@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/dialog_add_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="@string/hint_title"
+        android:inputType="textNoSuggestions"/>
+
+    <TextView
+        android:id="@+id/dialog_add_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Choose date:"
+        android:textSize="@dimen/text_size"
+        android:padding="5dp"/>
+
+    <DatePicker
+        android:id="@+id/dialog_add_datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"/>
+
+    <EditText
+        android:id="@+id/dialog_add_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="Category"
+        android:inputType="textNoSuggestions"/>
+
+    <EditText
+        android:id="@+id/dialog_add_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Text"
+        android:inputType="textNoSuggestions"/>
+
+    <EditText
+        android:id="@+id/dialog_add_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Quantity"
+        android:inputType="number"/>
+
+    <CheckBox
+        android:id="@+id/dialog_add_isdone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageButton
+        android:id="@+id/dialog_add_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="Delete image button"
+        app:srcCompat="@drawable/ic_delete_forever_black_24dp"
+        android:visibility="gone" />
+
+</LinearLayout>
