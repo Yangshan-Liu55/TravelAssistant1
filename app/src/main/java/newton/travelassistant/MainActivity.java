@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private  int list_position;
     private FirebaseAuth.AuthStateListener authStateListener; //for onStop method
     private FirebaseAuth mAuth; //for onStop method
+    Fragment fragment = null;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_currency:
                     // Start intent to currency activity
+//                    fragment = new Curr
                     return true;
                 case R.id.navigation_map:
 
