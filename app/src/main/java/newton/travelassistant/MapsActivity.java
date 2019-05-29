@@ -11,6 +11,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,8 +43,8 @@ public class MapsActivity extends FragmentActivity implements
     private Location lastLocation;
     private Marker currentUserLocationMarker;
     private static final int Request_User_Location_Code = 99;
-
-
+    double latitude = 0, longitude = 0;
+    private int ProximityRadius = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +62,122 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
+    public void onClick(View v) {
 
-    @Override
+        String air_port = "air_port", hotel = "hotel", bus_stop = "bus_stop", museum = "museum",
+                train_station = "train_station", restaurant = "restaurant", theater = "theater";
+
+        Object transferData[] = new Object[2];
+
+        FindPlaces findPlaces = new FindPlaces();
+
+
+
+
+        switch (v.getId()) {
+            case R.id.bus_stops:
+
+                mMap.clear();
+
+                Toast.makeText(getApplicationContext(), "So you want to take the bus?", Toast.LENGTH_LONG).show();
+                break;
+
+
+            case R.id.hotels: {
+                mMap.clear();
+
+                String url = getURL(latitude, longitude, hotel);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+
+                Toast.makeText(getApplicationContext(), "So you want to look for hotels?", Toast.LENGTH_LONG).show();
+
+
+                break;
+            }
+
+            case R.id.museums: {
+                mMap.clear();
+
+                String url = getURL(latitude, longitude, museum);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+
+                Toast.makeText(getApplicationContext(), "So you want to look for museums?", Toast.LENGTH_LONG).show();
+                break;
+            }
+
+            case R.id.air_ports: {
+                mMap.clear();
+
+                String url = getURL(latitude, longitude, air_port);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+
+
+                Toast.makeText(getApplicationContext(), "So you want to take the plane?", Toast.LENGTH_LONG).show();
+                break;
+            }
+
+            case R.id.restaurants: {
+                mMap.clear();
+
+                String url = getURL(latitude, longitude, restaurant);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+
+                Toast.makeText(getApplicationContext(), "So you want to look for restaurants?", Toast.LENGTH_LONG).show();
+                break;
+            }
+
+            case R.id.theaters: {
+                mMap.clear();
+
+                String url = getURL(latitude, longitude, theater);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+
+                Toast.makeText(getApplicationContext(), "So you want to go to the theater?", Toast.LENGTH_LONG).show();
+                break;
+            }
+
+            case R.id.train_stations: {
+                mMap.clear();
+/*
+                String url = getURL(latitude, longitude, train_station);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
+*/
+                Toast.makeText(getApplicationContext(), "So you want to take the train?", Toast.LENGTH_LONG).show();
+                break;
+            }
+
+        }
+
+    }
+
+    private String getURL(double latitude,double longitude,String nearbyPlace){
+
+        StringBuilder googleURL = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googleURL.append("location"+ latitude +","+ longitude);
+        googleURL.append("&radius=" +ProximityRadius);
+        googleURL.append("&type=" +nearbyPlace);
+        googleURL.append("&tsensor=true");
+        googleURL.append("&key"+ "AIzaSyDSUd1qJXTR5HJsKioiGxgnzF8n4UJ1V6I");
+
+        Log.d("googleMapsactivity","url ="+ googleURL.toString());
+
+        return googleURL.toString();
+    }
+
+
+        @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -147,6 +263,9 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onLocationChanged(Location location) {
 
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
         lastLocation = location;
 
         if (currentUserLocationMarker != null)
@@ -199,4 +318,3 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 }
-
