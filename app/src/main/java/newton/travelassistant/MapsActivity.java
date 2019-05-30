@@ -67,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements
         String air_port = "air_port", hotel = "hotel", bus_stop = "bus_stop", museum = "museum",
                 train_station = "train_station", restaurant = "restaurant", theater = "theater";
 
-        Object transferData[] = new Object[2];
+        Object transferData[] = new Object[6];
 
         FindPlaces findPlaces = new FindPlaces();
 
@@ -75,13 +75,17 @@ public class MapsActivity extends FragmentActivity implements
 
 
         switch (v.getId()) {
-            case R.id.bus_stops:
-
+            case R.id.bus_stops: {
                 mMap.clear();
 
-                Toast.makeText(getApplicationContext(), "So you want to take the bus?", Toast.LENGTH_LONG).show();
-                break;
+                String url = getURL(latitude, longitude, bus_stop);
+                transferData[0] = mMap;
+                transferData[1] = url;
+                findPlaces.execute(transferData);
 
+                Toast.makeText(getApplicationContext(), "Looking for bus stops.", Toast.LENGTH_LONG).show();
+                break;
+            }
 
             case R.id.hotels: {
                 mMap.clear();
@@ -91,13 +95,13 @@ public class MapsActivity extends FragmentActivity implements
                 transferData[1] = url;
                 findPlaces.execute(transferData);
 
-                Toast.makeText(getApplicationContext(), "So you want to look for hotels?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Looking for hotels.", Toast.LENGTH_LONG).show();
 
 
                 break;
             }
 
-            case R.id.museums: {
+            case R.id.museums:
                 mMap.clear();
 
                 String url = getURL(latitude, longitude, museum);
@@ -105,56 +109,57 @@ public class MapsActivity extends FragmentActivity implements
                 transferData[1] = url;
                 findPlaces.execute(transferData);
 
-                Toast.makeText(getApplicationContext(), "So you want to look for museums?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Looking for museums.", Toast.LENGTH_LONG).show();
                 break;
-            }
 
-            case R.id.air_ports: {
+
+            case R.id.air_ports:
                 mMap.clear();
 
-                String url = getURL(latitude, longitude, air_port);
+                 url = getURL(latitude, longitude, air_port);
                 transferData[0] = mMap;
                 transferData[1] = url;
                 findPlaces.execute(transferData);
 
 
-                Toast.makeText(getApplicationContext(), "So you want to take the plane?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Looking for air ports.", Toast.LENGTH_LONG).show();
                 break;
-            }
 
-            case R.id.restaurants: {
+
+            case R.id.restaurants:
                 mMap.clear();
 
-                String url = getURL(latitude, longitude, restaurant);
+                 url = getURL(latitude, longitude, restaurant);
                 transferData[0] = mMap;
                 transferData[1] = url;
                 findPlaces.execute(transferData);
 
-                Toast.makeText(getApplicationContext(), "So you want to look for restaurants?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Looking for restaurants.", Toast.LENGTH_LONG).show();
                 break;
-            }
 
-            case R.id.theaters: {
+
+            case R.id.theaters:
                 mMap.clear();
 
-                String url = getURL(latitude, longitude, theater);
+                 url = getURL(latitude, longitude, theater);
                 transferData[0] = mMap;
                 transferData[1] = url;
                 findPlaces.execute(transferData);
 
-                Toast.makeText(getApplicationContext(), "So you want to go to the theater?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Looking for theaters.", Toast.LENGTH_LONG).show();
                 break;
-            }
+
 
             case R.id.train_stations: {
                 mMap.clear();
-/*
-                String url = getURL(latitude, longitude, train_station);
+
+                 url = getURL(latitude, longitude, train_station);
                 transferData[0] = mMap;
                 transferData[1] = url;
                 findPlaces.execute(transferData);
-*/
-                Toast.makeText(getApplicationContext(), "So you want to take the train?", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getApplicationContext(), "Looking for train stations.", Toast.LENGTH_LONG).show();
+
                 break;
             }
 

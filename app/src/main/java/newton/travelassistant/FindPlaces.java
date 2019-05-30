@@ -66,11 +66,11 @@ private void DisplayNearByPlaces(List<HashMap<String, String>> nearByPlacesList)
         mMap.addMarker(markerOptions);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(14));
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
 
 
 
-        String reference = googleNearByPlace.get("preference");
+
     }
 }
 }

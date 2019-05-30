@@ -13,7 +13,7 @@
         class="com.google.android.gms.maps.SupportMapFragment"/>
 
     <RadioGroup
-        android:id="@+id/facilities"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
@@ -22,46 +22,64 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Museums"
-            android:checked="true" />
+            android:visibility="gone"
+            android:onClick="onClick"
+            />
 
         <RadioButton
             android:id="@+id/restaurants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restaurants" />
+            android:text="Restaurants"
+            android:onClick="onClick"
+            android:visibility="gone"
+            />
 
         <RadioButton
             android:id="@+id/hotels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hotels"
-            android:checked="true" />
+            android:visibility="gone"
+            android:onClick="onClick"
+            />
 
         <RadioButton
             android:id="@+id/theaters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Theaters" />
+            android:text="Theaters"
+            android:onClick="onClick"
+            android:visibility="gone"
+            />
 
         <RadioButton
             android:id="@+id/bus_stops"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bus stops"
-            android:checked="true" />
+            android:checked="true"
+            android:visibility="gone"
+            />
 
         <RadioButton
             android:id="@+id/air_ports"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Air ports" />
+            android:text="Air ports"
+            android:onClick="onClick"
+            android:visibility="gone"
+            />
 
         <RadioButton
             android:id="@+id/train_stations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Train stations"
-            android:checked="true" />
+            android:checked="true"
+            android:onClick="onClick"
+            android:visibility="gone"
+            />
 
 
 
