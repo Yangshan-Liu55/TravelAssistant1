@@ -76,14 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_currency:
                     // Start intent to currency activity
                     return true;
-                case R.id.navigation_map:
-
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intent);
+                case R.id.navigation_notifications:
+                    // Start intent to notifications activity
                     return true;
-
-
-
             }
             return false;
         }
