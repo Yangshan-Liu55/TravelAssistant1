@@ -1,10 +1,15 @@
 package newton.travelassistant;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +48,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +64,8 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nullable;
+
+import newton.travelassistant.Common.Common;
 
 public class MainActivity extends AppCompatActivity {
 //flytt
@@ -64,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener; //for onStop method
     private FirebaseAuth mAuth; //for onStop method
 
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationCallback mLocationCallback;
+    private LocationRequest mLocationRequest;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -78,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_weather:
                     selectedFragment = new WeatherFragment();
+
                     break;
                 case R.id.navigation_currency:
                     selectedFragment = new CurrencyFragment();
@@ -122,6 +144,31 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()){
+                            buildLocationRequest();
+                            buildLocationCallback();
+
+                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED &&
+                                    ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+                                return;
+                            }
+                            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+                            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
+                        }
+                        //Snackbar.make(mCoordinatorLayout,"Permission Granted",Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        //Snackbar.make(mCoordinatorLayout,"Permission Denied",Snackbar.LENGTH_LONG).show();
+                    }
+                }).check();
 
         // Set listView Flytta
         listsAdapter = new ListsAdapter(MainActivity.this, R.layout.lists_item, myLists);
@@ -230,14 +277,14 @@ public class MainActivity extends AppCompatActivity {
         View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_inventory_add, null);
         addBuilder.setView(view);
 
-        final EditText title = (EditText)view.findViewById(R.id.dialog_add_title);
-        final TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
+        final EditText title = view.findViewById(R.id.dialog_add_title);
+        final TextView date = view.findViewById(R.id.dialog_add_date);
         DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
-        EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
-        EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
-        EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
-        CheckBox isDone = (CheckBox)view.findViewById(R.id.dialog_add_isdone);
-        ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
+        EditText category = view.findViewById(R.id.dialog_add_category);
+        EditText text = view.findViewById(R.id.dialog_add_text);
+        EditText quantity = view.findViewById(R.id.dialog_add_quantity);
+        CheckBox isDone = view.findViewById(R.id.dialog_add_isdone);
+        ImageButton img_btn_delete = view.findViewById(R.id.dialog_add_delete);
         title.setVisibility(View.VISIBLE);
         date.setVisibility(View.VISIBLE);
         dialog_add_datePicker.setVisibility(View.VISIBLE);
@@ -370,14 +417,14 @@ public class MainActivity extends AppCompatActivity {
         View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_inventory_add, null);
         editBuilder.setView(view);
 
-        final EditText editText_title = (EditText)view.findViewById(R.id.dialog_add_title);
-        final TextView date = (TextView)view.findViewById(R.id.dialog_add_date);
-        DatePicker dialog_add_datePicker = (DatePicker)view.findViewById(R.id.dialog_add_datePicker);
-        EditText category = (EditText)view.findViewById(R.id.dialog_add_category);
-        EditText text = (EditText)view.findViewById(R.id.dialog_add_text);
-        EditText quantity = (EditText)view.findViewById(R.id.dialog_add_quantity);
-        CheckBox isDone = (CheckBox)view.findViewById(R.id.dialog_add_isdone);
-        ImageButton img_btn_delete = (ImageButton)view.findViewById(R.id.dialog_add_delete);
+        final EditText editText_title = view.findViewById(R.id.dialog_add_title);
+        final TextView date = view.findViewById(R.id.dialog_add_date);
+        DatePicker dialog_add_datePicker = view.findViewById(R.id.dialog_add_datePicker);
+        EditText category = view.findViewById(R.id.dialog_add_category);
+        EditText text = view.findViewById(R.id.dialog_add_text);
+        EditText quantity = view.findViewById(R.id.dialog_add_quantity);
+        CheckBox isDone = view.findViewById(R.id.dialog_add_isdone);
+        ImageButton img_btn_delete = view.findViewById(R.id.dialog_add_delete);
         editText_title.setVisibility(View.VISIBLE);
         date.setVisibility(View.VISIBLE);
         dialog_add_datePicker.setVisibility(View.VISIBLE);
@@ -693,6 +740,27 @@ public class MainActivity extends AppCompatActivity {
         String msg = "Play Services: " + apiAvail.getErrorString(errorCode);
         Log.d(TAG, msg);
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    private void buildLocationCallback() {
+        mLocationCallback = new LocationCallback() {
+
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Common.current_location = locationResult.getLastLocation();
+                Log.d("Location: ",locationResult.getLastLocation().getLatitude()+"/"+locationResult.getLastLocation().getLongitude());
+
+            }
+        };
+    }
+
+    private void buildLocationRequest(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setSmallestDisplacement(10.0f);
     }
 
     @Override
