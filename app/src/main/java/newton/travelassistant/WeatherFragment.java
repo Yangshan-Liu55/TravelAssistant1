@@ -49,18 +49,19 @@ public class WeatherFragment extends Fragment {
 
 
     ImageView img_weather;
-    TextView txt_city_name, txt_humidity, txt_sunrise, txt_sunset, txt_preassure, txt_temperature, txt_description , txt_date_time,txt_wind,txt_geo_coord;
+    TextView txt_city_name, txt_humidity, txt_sunrise, txt_sunset, txt_preassure, txt_temperature, txt_description , txt_date_time,txt_wind, txt_geo_coord;
     ProgressBar loading;
     LinearLayout weather_panel;
     RecyclerView recycler_forecast;
     MaterialSearchBar mMaterialSearchBar;
-    List<String> listCities;
 
     CompositeDisposable mCompositeDisposable;
     IOpenWeatherMap mService;
 
+    List<String> listCities;
+
     public WeatherFragment() {
-        // Required empty public constructor
+        // Required public constructor
         mCompositeDisposable = new CompositeDisposable();
         Retrofit retrofit = RetrofitClient.getInstance();
         mService = retrofit.create(IOpenWeatherMap.class);
@@ -84,39 +85,28 @@ public class WeatherFragment extends Fragment {
         txt_sunrise = itemView.findViewById(R.id.txt_sunrise);
         txt_sunset = itemView.findViewById(R.id.txt_sunset);
         txt_temperature = itemView.findViewById(R.id.txt_temperature);
-        mMaterialSearchBar = itemView.findViewById(R.id.searchBar);
-        mMaterialSearchBar.setEnabled(false);
-
-        new LoadCities().execute();
-
         weather_panel = itemView.findViewById(R.id.weather_panel);
         loading = itemView.findViewById(R.id.loading);
 
+        //Search bar
+        mMaterialSearchBar = itemView.findViewById(R.id.searchBar);
+        mMaterialSearchBar.setEnabled(false);
+
+        //loads citys from city_list.gz in raw folder
+        new LoadCities().execute();
+
+
+
+
+        //Recyclerview
         recycler_forecast = itemView.findViewById(R.id.recycler_forecast);
         recycler_forecast.setHasFixedSize(true);
         recycler_forecast.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
 
-
-
+        //called to populate our view before entering city name
         getForecastWeatherInformation();
         getWeatherInformation();
 
-        mMaterialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
-            @Override
-            public void onSearchStateChanged(boolean enabled) {
-
-            }
-
-            @Override
-            public void onSearchConfirmed(CharSequence text) {
-
-            }
-
-            @Override
-            public void onButtonClicked(int buttonCode) {
-
-            }
-        });
         return itemView;
     }
 
@@ -160,12 +150,12 @@ public class WeatherFragment extends Fragment {
                 .subscribe(new Consumer<WeatherResult>() {
                     @Override
                     public void accept(WeatherResult weatherResult) throws Exception {
-
+                        //fetching img from Owm api and setting them to imgview
                         Picasso.get().load(new StringBuilder("https://openweathermap.org/img/w/")
                                 .append(weatherResult.getWeather().get(0).getIcon())
                                 .append(".png").toString()).into(img_weather);
 
-                        //Load information
+                        //Load information and build the strings
                         txt_city_name.setText(weatherResult.getName());
                         txt_description.setText(new StringBuilder("Weather in ")
                                 .append(weatherResult.getName()).toString());
@@ -189,7 +179,7 @@ public class WeatherFragment extends Fragment {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Toast.makeText(getActivity(),""+throwable.getMessage(),Toast.LENGTH_SHORT).show();
-                        Log.d("GetWeatherInformation", ""+throwable.getMessage());
+                        Log.d("GetWeatherInformation", ""+throwable.getMessage());//
                     }
                 })
 
@@ -201,6 +191,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         protected List<String> doInBackgroundSimple() {
+            //Creates list and appends results from city_list raw file which is a bit slow but still faster then Owm own raw file
             listCities = new ArrayList<>();
             try {
                 StringBuilder builder = new StringBuilder();
@@ -233,6 +224,7 @@ public class WeatherFragment extends Fragment {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //Suggestions from listCity, works sometimes
                     List<String> suggest = new ArrayList<>();
                     for (String search : listCity){
                         if (search.toLowerCase().contains(mMaterialSearchBar.getText().toLowerCase()))
@@ -254,6 +246,7 @@ public class WeatherFragment extends Fragment {
 
                 @Override
                 public void onSearchConfirmed(CharSequence text) {
+                    //gets weather and forecast by city name
                     getWeatherByCityName(text.toString());
                     getForecastWeatherByCityName(text.toString());
                 }

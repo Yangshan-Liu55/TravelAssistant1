@@ -7,6 +7,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface IOpenWeatherMap {
+    //our interface for making 4 different calls
+    // 2 weather/forecast calls each one by coords other by city name
     @GET("weather")
     Observable<WeatherResult> getWeatherByLatLng(@Query("lat") String lat,
                                                  @Query("lon") String lon,

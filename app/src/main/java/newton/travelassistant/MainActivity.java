@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_weather:
                     selectedFragment = new WeatherFragment();
-
                     break;
                 case R.id.navigation_currency:
                     selectedFragment = new CurrencyFragment();

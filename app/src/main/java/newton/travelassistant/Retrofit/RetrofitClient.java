@@ -8,6 +8,7 @@ public class RetrofitClient {
     private static Retrofit instance;
 
     public static Retrofit getInstance(){
+        //Setting the base url for our API calls that will go through our own interface
         if (instance == null)
             instance = new Retrofit.Builder()
                     .baseUrl("http://api.openweathermap.org/data/2.5/")
