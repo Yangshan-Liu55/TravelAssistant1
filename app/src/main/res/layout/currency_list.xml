@@ -14,24 +14,45 @@ android:orientation="horizontal"
         android:scaleType="fitStart"
         />
 
-    <TextView
-        android:id="@+id/currency_name"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="10dp"
-        android:textSize="30dp"
-        android:textColor="#666872" />
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/currency_name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:textSize="30dp"
+            android:textColor="#666872" />
+
+        <TextView
+            android:id="@+id/currency_fullname"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:textSize="16dp"
+            android:textColor="#40666872"
+            />
+
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/currency_value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="70dp"
+        android:maxLines="1"
         android:layout_gravity="center"
         android:gravity="center_vertical|right"
         android:textSize="30dp"
         android:textColor="#666872"
-        android:paddingRight="10dp"
+        android:layout_marginRight="-10dp"
         />
 
 

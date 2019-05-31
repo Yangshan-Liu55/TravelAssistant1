@@ -1,7 +1,7 @@
 package newton.travelassistant;
 
 public class CurrencyData {
-    private String imgUrl, currencyName, currencyValue;
+    private String imgUrl, currencyName, currencyValue, currencyFullName;
 
 
     public CurrencyData() {
@@ -29,5 +29,13 @@ public class CurrencyData {
 
     public void setCurrencyValue(String currencyValue) {
         this.currencyValue = currencyValue;
+    }
+
+    public String getCurrencyFullName() {
+        return currencyFullName;
+    }
+
+    public void setCurrencyFullName(String currencyFullName) {
+        this.currencyFullName = currencyFullName;
     }
 }

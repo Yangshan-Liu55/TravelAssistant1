@@ -5,10 +5,21 @@ import java.util.Map;
 
 public class FlagAPI {
 
-    protected String getFlag(String currencyCode) {
-        String countryCode = new FlagAPI().getInfo(currencyCode)[1].toLowerCase();
-        String imgURL = "https://www.countryflags.io/" + countryCode + "/flat/64.png";
-        return imgURL;
+    protected String getFlagURL(String currencyCode) {
+        if (new FlagAPI().getInfo(currencyCode) != null) {
+            String countryCode = new FlagAPI().getInfo(currencyCode)[1].toLowerCase();
+            return "https://www.countryflags.io/" + countryCode + "/flat/64.png";
+        } else {
+            return "";
+        }
+    }
+
+    protected String getCurrencyFullName(String currencyCode) {
+        if (new FlagAPI().getInfo(currencyCode) != null) {
+            return new FlagAPI().getInfo(currencyCode)[0];
+        } else {
+            return "";
+        }
     }
 
     protected String[] getInfo(String currencyCode) {
@@ -17,8 +28,8 @@ public class FlagAPI {
 
         infoMap.put("AED", new String[]{"Dirham", "AE", "United Arab Emirates"});
         infoMap.put("AFN", new String[]{"Afghani", "AF", "Afghanistan"});
-        infoMap.put("ALL", new String[]{"Lek", "AL", "Albania"});
-        infoMap.put("AMD", new String[]{"Dram", "AM", "Armenia"});
+        infoMap.put("ALL", new String[]{"Albanian Lek", "AL", "Albania"});
+        infoMap.put("AMD", new String[]{"Armenian Dram", "AM", "Armenia"});
         infoMap.put("ANG", new String[]{"Netherlands Antilles Guilder", "AN", "Netherlands Antilles"});
         infoMap.put("AOA", new String[]{"Angolan kwanza", "AO", "Angola"});
         infoMap.put("AQD", new String[]{"Antarctican dollar", "AQ", "Antarctica"});
@@ -139,8 +150,8 @@ public class FlagAPI {
         infoMap.put("SBD", new String[]{"Solomon Islands Dollar", "SB", "Solomon Islands"});
         infoMap.put("SCR", new String[]{"Rupee", "SC", "Seychelles"});
         infoMap.put("SDG", new String[]{"Dinar", "SD", "Sudan"});
-        infoMap.put("SEK", new String[]{"Krona", "SE", "Sweden"});
-        infoMap.put("SGD", new String[]{"Dollar", "SG", "Singapore"});
+        infoMap.put("SEK", new String[]{"Swedish Krona", "SE", "Sweden"});
+        infoMap.put("SGD", new String[]{"Singapore Dollar", "SG", "Singapore"});
         infoMap.put("SKK", new String[]{"Koruna", "SK", "Slovakia (Slovak Republic)"});
         infoMap.put("SLL", new String[]{"Leone", "SL", "Sierra Leone"});
         infoMap.put("SOS", new String[]{"Shilling", "SO", "Somalia"});

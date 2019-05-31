@@ -35,6 +35,7 @@ public class CurrencyAdapter extends ArrayAdapter<CurrencyData> {
             viewHolder.imageView = view.findViewById(R.id.flag_image);
             viewHolder.currencyNameText = view.findViewById(R.id.currency_name);
             viewHolder.currencyValueText = view.findViewById(R.id.currency_value);
+            viewHolder.currencyFullNameText = view.findViewById(R.id.currency_fullname);
             view.setTag(viewHolder); //Save viewholder in view
         } else {
             view = convertView;
@@ -45,6 +46,7 @@ public class CurrencyAdapter extends ArrayAdapter<CurrencyData> {
         Glide.with(context).load(currencyData.getImgUrl()).into(viewHolder.imageView); //glide with url into imgView
         viewHolder.currencyNameText.setText(currencyData.getCurrencyName());
         viewHolder.currencyValueText.setText(currencyData.getCurrencyValue());
+        viewHolder.currencyFullNameText.setText(currencyData.getCurrencyFullName());
 
         return view;
     }
@@ -53,6 +55,7 @@ public class CurrencyAdapter extends ArrayAdapter<CurrencyData> {
         ImageView imageView;
         TextView currencyNameText;
         TextView currencyValueText;
+        TextView currencyFullNameText;
     }
 
 
