@@ -4,7 +4,15 @@ public class CurrencyData {
     private String imgUrl, currencyName, currencyValue, currencyFullName;
 
 
+    public CurrencyData(String imgUrl, String currencyName, String currencyFullName) {
+        this.imgUrl = imgUrl;
+        this.currencyName = currencyName;
+        this.currencyFullName = currencyFullName;
+    }
+
     public CurrencyData() {
+
+
     }
 
     public String getCurrencyName() {

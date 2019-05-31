@@ -1,6 +1,8 @@
 package newton.travelassistant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FlagAPI {
@@ -23,9 +25,24 @@ public class FlagAPI {
     }
 
     protected String[] getInfo(String currencyCode) {
-        Map<String, String[]> infoMap = new HashMap<>();
-        infoMap.put("currencyCode", new String[]{"currencyName", "countryCode", "countryName"});
+        Map<String, String[]> infoMap = init();
 
+        if (infoMap.get(currencyCode) != null) {
+            return infoMap.get(currencyCode);
+        } else {
+            return null;
+        }
+    }
+
+    protected List<String> getAllCurrencyCode() {
+        Map<String, String[]> infoMap = init();
+        List<String> allKeys = new ArrayList<>(infoMap.keySet());
+        return allKeys;
+    }
+
+    protected Map<String, String[]> init() {
+        Map<String, String[]> infoMap = new HashMap<>();
+//        infoMap.put("currencyCode", new String[]{"currencyName", "countryCode", "countryName"});
         infoMap.put("AED", new String[]{"Dirham", "AE", "United Arab Emirates"});
         infoMap.put("AFN", new String[]{"Afghani", "AF", "Afghanistan"});
         infoMap.put("ALL", new String[]{"Albanian Lek", "AL", "Albania"});
@@ -185,11 +202,6 @@ public class FlagAPI {
         infoMap.put("ZAR", new String[]{"Rand", "ZA", "South Africa"});
         infoMap.put("ZMK", new String[]{"Kwacha", "ZM", "Zambia"});
         infoMap.put("ZWD", new String[]{"Zimbabwe Dollar", "ZW", "Zimbabwe"});
-
-        if (infoMap.get(currencyCode) != null) {
-            return infoMap.get(currencyCode);
-        } else {
-            return null;
-        }
+        return infoMap;
     }
 }

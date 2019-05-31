@@ -1,5 +1,6 @@
 package newton.travelassistant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,27 +39,34 @@ public class CurrencyFragment extends Fragment {
     private ImageView inputImage;
     private TextView inputCurrencyName;
     private TextView inputCurrencyFullName;
+    private ImageButton addCurrency;
     private String typedText;
+    private ArrayList<String> bundle = new ArrayList<>();
+    private View view;
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_currency, container, false );
+        if (savedInstanceState != null) {
+            bundle = getArguments().getStringArrayList("key");
+            defaultCodes = bundle;
+        } else {
+            
+            defaultCodes.addAll(Arrays.asList("EUR", "USD", "GBP", "NOK"));
+        }
+        defaultInputCode = "SEK";
+        typedText = "0";
+        view = inflater.inflate(R.layout.fragment_currency, container, false );
         inputCurrencyValue = view.findViewById(R.id.input_currency_value);
         inputImage = view.findViewById(R.id.input_image);
         inputCurrencyName = view.findViewById(R.id.input_currency_name);
         inputCurrencyFullName = view.findViewById(R.id.input_currency_fullname);
         listView = view.findViewById(R.id.list_view);
+        addCurrency = view.findViewById(R.id.currency_add);
 
 
-        defaultCodes.addAll(Arrays.asList("EUR", "USD", "GBP", "NOK"));
-        defaultInputCode = "SEK";
-        typedText = "0";
-//        for (String code : defaultCodes) {
-//            currencyCodes.add(code);
-//        }
         currencyCodes = defaultCodes;
 
         updateListView(null);
@@ -114,58 +123,67 @@ public class CurrencyFragment extends Fragment {
             }
         });
 
-        /*
-        final GestureDetector gesture = new GestureDetector(getActivity(),
-                new GestureDetector.SimpleOnGestureListener() {
-
-                    @Override
-                    public boolean onDown(MotionEvent e) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                           float velocityY) {
-                        Log.i("MyApp", "Fling called");
-                        final int SWIPE_MIN_DISTANCE = 120;
-                        final int SWIPE_MAX_OFF_PATH = 250;
-                        final int SWIPE_THRESHOLD_VELOCITY = 200;
-                        try {
-                            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                                return false;
-                            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                                Log.i("MyApp", "Right to Left");
-                            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                                Log.i("MyApp", "Left to Right");
-                            }
-                        } catch (Exception e) {
-
-                        }
-                        return super.onFling(e1, e2, velocityX, velocityY);
-                    }
-
-//                    @Override
-//                    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-//                                            float distanceY) {
-//                        SwipeLayoutManager.getInstance().closeCurrentLayout();
-//                        return super.onScroll(e1, e2, distanceX, distanceY);
-//                    }
-
-
-                });
-
-
-        listView.setOnTouchListener(new View.OnTouchListener() {
+        addCurrency.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gesture.onTouchEvent(motionEvent);
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CurrencyAdd.class);
+                intent.putStringArrayListExtra("key", (ArrayList<String>) defaultCodes);
+                startActivity(intent);
             }
         });
-        */
 
-
+//
+//        final GestureDetector gesture = new GestureDetector(getActivity(),
+//                new GestureDetector.SimpleOnGestureListener() {
+//
+//                    @Override
+//                    public boolean onDown(MotionEvent e) {
+//                        return true;
+//                    }
+//
+//                    @Override
+//                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+//                                           float velocityY) {
+//                        Log.i("MyApp", "Fling called");
+//                        final int SWIPE_MIN_DISTANCE = 120;
+//                        final int SWIPE_MAX_OFF_PATH = 250;
+//                        final int SWIPE_THRESHOLD_VELOCITY = 200;
+//                        try {
+//                            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+//                                return false;
+//                            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+//                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+//                                Log.i("MyApp", "Right to Left");
+//                            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+//                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+//                                Log.i("MyApp", "Left to Right");
+//                            }
+//                        } catch (Exception e) {
+//
+//                        }
+//                        return super.onFling(e1, e2, velocityX, velocityY);
+//                    }
+//
+////                    @Override
+////                    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+////                                            float distanceY) {
+////                        SwipeLayoutManager.getInstance().closeCurrentLayout();
+////                        return super.onScroll(e1, e2, distanceX, distanceY);
+////                    }
+//
+//
+//                });
+//
+//
+//        listView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return gesture.onTouchEvent(motionEvent);
+//            }
+//        });
+//
+//
+//
 //        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            @Override
 //            public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -237,6 +255,11 @@ public class CurrencyFragment extends Fragment {
     }
 
 
-
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("Check:", String.valueOf(currencyCodes));
+        updateListView(equalUSDValue);
+        setInputBox(view, defaultInputCode);
+    }
 }
