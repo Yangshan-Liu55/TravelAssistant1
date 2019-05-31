@@ -304,9 +304,10 @@ public class MainActivity extends AppCompatActivity {
         Date curDate =  new Date(System.currentTimeMillis());
         String dateStr = formatter.format(curDate);
         int cur_year = Integer.parseInt(dateStr.substring(0, 4));
-        int cur_month = Integer.parseInt(dateStr.substring(5, 7));
+        int cur_month = Integer.parseInt(dateStr.substring(5, 7)) - 1; // 0=Jan, 1=Feb, 2=Mar...
         int cur_day = Integer.parseInt(dateStr.substring(8));
 //        Log.d(TAG, String.valueOf(cur_year)+"-"+String.valueOf(cur_month)+"-"+String.valueOf(cur_day));
+        date.setText(dateToString(cur_year, cur_month, cur_day)); // Default datePicker
         dialog_add_datePicker.init(cur_year, cur_month, cur_day, new OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
@@ -444,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
         Date curDate =  new Date(System.currentTimeMillis());
         String dateStr = formatter.format(curDate);
         int cur_year = Integer.parseInt(dateStr.substring(0, 4));
-        int cur_month = Integer.parseInt(dateStr.substring(5, 7));
+        int cur_month = Integer.parseInt(dateStr.substring(5, 7)) - 1;
         int cur_day = Integer.parseInt(dateStr.substring(8));
 //        Log.d(TAG, String.valueOf(cur_year)+"-"+String.valueOf(cur_month)+"-"+String.valueOf(cur_day));
         dialog_add_datePicker.init(cur_year, cur_month, cur_day, new OnDateChangedListener() {
