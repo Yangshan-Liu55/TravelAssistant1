@@ -60,6 +60,7 @@
             android:text="Bus stops"
             android:checked="true"
             android:visibility="gone"
+            android:onClick="onClick"
             />
 
         <RadioButton
