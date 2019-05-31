@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/currency_edit"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="#990000FF"
+        android:gravity="center"
+        android:text="Fix Top"
+        android:textSize="35dp" />
+
+
+    <TextView
+        android:id="@+id/currency_delete"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="#F44336"
+        android:gravity="center"
+        android:text="Delete"
+        android:textSize="35dp" />
+
+
+</android.support.constraint.LinearLayout>
