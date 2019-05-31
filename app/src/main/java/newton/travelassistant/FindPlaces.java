@@ -2,6 +2,7 @@ package newton.travelassistant;
 
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,6 +61,7 @@ private void DisplayNearByPlaces(List<HashMap<String, String>> nearByPlacesList)
 
 
         LatLng latLng = new LatLng(lat,lng);
+        Log.d("latlng", String.valueOf(latLng));
         markerOptions.position(latLng);
         markerOptions.title(nameOfPlace +" : " + vicinity);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));

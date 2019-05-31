@@ -64,10 +64,10 @@ public class MapsActivity extends FragmentActivity implements
 
     public void onClick(View v) {
 
-        String air_port = "air_port", hotel = "hotel", bus_stop = "bus_stop", museum = "museum",
-                train_station = "train_station", restaurant = "restaurant", theater = "theater";
+        String  hotel = "hotel",  museum = "museum",
+                 restaurant = "restaurant", theater = "theater";
 
-        Object transferData[] = new Object[6];
+        Object transferData[] = new Object[3];
 
         FindPlaces findPlaces = new FindPlaces();
 
@@ -75,19 +75,9 @@ public class MapsActivity extends FragmentActivity implements
 
 
         switch (v.getId()) {
-            case R.id.bus_stops: {
-                mMap.clear();
 
-                String url = getURL(latitude, longitude, bus_stop);
-                transferData[0] = mMap;
-                transferData[1] = url;
-                findPlaces.execute(transferData);
 
-                Toast.makeText(getApplicationContext(), "Looking for bus stops.", Toast.LENGTH_LONG).show();
-                break;
-            }
-
-            case R.id.hotels: {
+            case R.id.hotels:
                 mMap.clear();
 
                 String url = getURL(latitude, longitude, hotel);
@@ -99,12 +89,12 @@ public class MapsActivity extends FragmentActivity implements
 
 
                 break;
-            }
+
 
             case R.id.museums:
                 mMap.clear();
 
-                String url = getURL(latitude, longitude, museum);
+                 url = getURL(latitude, longitude, museum);
                 transferData[0] = mMap;
                 transferData[1] = url;
                 findPlaces.execute(transferData);
@@ -113,17 +103,7 @@ public class MapsActivity extends FragmentActivity implements
                 break;
 
 
-            case R.id.air_ports:
-                mMap.clear();
 
-                 url = getURL(latitude, longitude, air_port);
-                transferData[0] = mMap;
-                transferData[1] = url;
-                findPlaces.execute(transferData);
-
-
-                Toast.makeText(getApplicationContext(), "Looking for air ports.", Toast.LENGTH_LONG).show();
-                break;
 
 
             case R.id.restaurants:
@@ -150,18 +130,7 @@ public class MapsActivity extends FragmentActivity implements
                 break;
 
 
-            case R.id.train_stations: {
-                mMap.clear();
 
-                 url = getURL(latitude, longitude, train_station);
-                transferData[0] = mMap;
-                transferData[1] = url;
-                findPlaces.execute(transferData);
-
-                Toast.makeText(getApplicationContext(), "Looking for train stations.", Toast.LENGTH_LONG).show();
-
-                break;
-            }
 
         }
 
@@ -287,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements
         currentUserLocationMarker = mMap.addMarker(markerOptions);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(14));
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
 
 
         if (googleApiClient != null) {
