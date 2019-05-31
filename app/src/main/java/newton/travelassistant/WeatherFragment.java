@@ -24,6 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.label305.asynctask.SimpleAsyncTask;
@@ -119,10 +122,11 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (checkLocationPermission()) {
-            getWeatherInformation();
+        if ( checkLocationPermission()){
             getForecastWeatherInformation();
+            getWeatherInformation();
         }
+
     }
 
     public boolean checkLocationPermission(){
@@ -408,8 +412,6 @@ public class WeatherFragment extends Fragment {
         mCompositeDisposable.clear();
         super.onDestroy();
     }
-
-
 
 
 }
