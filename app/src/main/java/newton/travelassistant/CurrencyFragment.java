@@ -188,7 +188,6 @@ public class CurrencyFragment extends Fragment {
 //            @Override
 //            public void onScrollStateChanged(AbsListView absListView, int i) {
 //                if (i == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-//                    //如果垂直滑动，则需要关闭已经打开的layout
 //                    SwipeLayoutManager.getInstance().closeCurrentLayout();
 //                }
 //            }

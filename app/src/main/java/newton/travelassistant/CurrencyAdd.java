@@ -91,9 +91,7 @@ public class CurrencyAdd extends AppCompatActivity {
                 String addCode = data.getCurrencyName();
                 Log.i("APP5", String.valueOf(addCode));
                 sendBackData(addCode);
-//                Intent intent = new Intent(CurrencyAdd.this, CurrencyFragment.class);
-//                intent.putExtra("key", addedCode);
-//                startActivity(intent);
+
             }
         });
 

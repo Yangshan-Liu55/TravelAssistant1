@@ -4,6 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +31,7 @@ public class CurrencyAPI {
             }
         }
 
-        /*
+
         try {
 
             URL url = new URL(API);
@@ -56,7 +62,7 @@ public class CurrencyAPI {
             e.printStackTrace();
         } catch (Exception e){
             e.printStackTrace();
-        } */
+        }
         return getTempCurrency();
     }
 
