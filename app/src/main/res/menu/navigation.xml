@@ -7,15 +7,14 @@
         android:title="@string/title_lists" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_weather"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:title="Weather" />
 
     <item
         android:id="@+id/navigation_currency"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_attach_money_black_24dp"
         android:title="@string/title_currency" />
-
 
 
     <item
@@ -23,4 +22,5 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/title_locator"
          />
+
 </menu>

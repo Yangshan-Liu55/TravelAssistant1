@@ -72,12 +72,18 @@ public class InventoryActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 // TODO Auto-generated method stub
                 int temp_done = parent_list.get(i).getChild_list().get(i1).getDone();
+                int temp_sum_done = inventory.getDone();// UpdateData at once
                 if (temp_done == 1) {
                     temp_done = 0;
+                    inventory.setDone(temp_sum_done - 1);// UpdateData at once
                 } else {
                     temp_done = 1;
+                    inventory.setDone(temp_sum_done + 1);// UpdateData at once
                 }
                 editCheckbox(i, i1, temp_done);
+                // UpdateData at once
+                // updateTotalDoneData(inventory.getTotal(), inventory.getDone());
+                // end UpdateData at once
 
 //                Log.d(TAG2, "Click child");
 //                Toast.makeText(InventoryActivity.this, parent_list.get(i).getChild_list().get(i1).getText(), Toast.LENGTH_LONG).show();
@@ -175,15 +181,24 @@ public class InventoryActivity extends AppCompatActivity {
         temp_text_map.put("quantity", selected_qunty);
         category_map.put(selected_tx, temp_text_map); // Then add new text map 重新放一个相同的key,会自动覆盖value的
 
-//        categories_map.remove(selected_category); // First delete selected category and its child 重新放一个相同的key,会自动覆盖value的
+//        categories_map.remove(selected_category); // First delete selected category and its child. Value covered to the same key
         categories_map.put(selected_category, category_map); // Then add new category map with old category string
-        updateCategoryData(); // Update modified category to Firestore
+        // UpdateData at once
+        //updateCategoryData(); // Update modified category to Firestore
+        updateData();
+        // end UpdateData at once
     }
 
     private void deleteItem(final int group_position, int child_position) {
         final String selected_category = parent_list.get(group_position).getCategory();
         ChildData child = parent_list.get(group_position).getChild_list().get(child_position);
         final String selected_text = child.getText();
+        int done = child.getDone();// UpdateData at once
+        int temp_sum_done = inventory.getDone();// UpdateData at once
+        temp_sum_done = (done == 1) ? (temp_sum_done - 1): temp_sum_done;// UpdateData at once
+        inventory.setDone(temp_sum_done);// UpdateData at once
+        int temp_total = inventory.getTotal() - 1;// UpdateData at once
+        inventory.setTotal(temp_total);// UpdateData at once
 
         AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(InventoryActivity.this);
         deleteBuilder.setIcon(R.drawable.ic_delete_forever_black_24dp);
@@ -198,7 +213,10 @@ public class InventoryActivity extends AppCompatActivity {
 //                categories_map.remove(selected_category); // remove selected category 重新放一个相同的key,会自动覆盖value的
                 categories_map.put(selected_category,category_map); // add new category_map with deleted selected_text map
 
-                updateCategoryData(); // Update new categories_map to Firestore
+                // UpdateData at once
+//                updateCategoryData(); // Update new categories_map to Firestore
+                updateData();// UpdateData at once
+                // end UpdateData at once
             }
         });
         deleteBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -234,7 +252,7 @@ public class InventoryActivity extends AppCompatActivity {
         isDone.setVisibility(View.VISIBLE);
         img_btn_delete.setVisibility(View.VISIBLE);
 
-        ChildData child = parent_list.get(group_position).getChild_list().get(child_position);
+        final ChildData child = parent_list.get(group_position).getChild_list().get(child_position); // UpdateData at once
         final String selected_text = child.getText();
         text.setText(selected_text);
         quantity.setText(String.valueOf(child.getQuantity()));
@@ -249,7 +267,21 @@ public class InventoryActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String txt = text.getText().toString();
                 int q = Integer.parseInt(quantity.getText().toString());
-                int done = isDone.isChecked() ? 1 : 0;
+                // UpdateData at once
+//                int done = isDone.isChecked() ? 1 : 0;
+                if (child.getDone() == 1) {
+                    int temp_sum_done = inventory.getDone() - 1;// UpdateData at once
+                    inventory.setDone(temp_sum_done);// UpdateData at once
+                }
+                int done;
+                if (isDone.isChecked()) {
+                    done = 1;
+                    int temp_sum_done = inventory.getDone() + 1;
+                    inventory.setDone(temp_sum_done);
+                } else {
+                    done = 0;
+                }
+                // end UpdateData at once
                 if (txt.trim().equals("")) { //isEmpty()
                     text.setError("Input item");
                     Toast.makeText(InventoryActivity.this, "Failed! Item is empty", Toast.LENGTH_SHORT).show();
@@ -264,7 +296,10 @@ public class InventoryActivity extends AppCompatActivity {
 
 //                    categories_map.remove(selected_category); // First delete selected category and its child 重新放一个相同的key,会自动覆盖value的
                     categories_map.put(selected_category, category_map); // Then add new category map with old category string
-                    updateCategoryData(); // Update modified category to Firestore
+                    // UpdateData at once
+//                    updateCategoryData(); // Update modified category to Firestore
+                    updateData();
+                    // end UpdateData at once
                 }
             }
         });
@@ -324,7 +359,17 @@ public class InventoryActivity extends AppCompatActivity {
                     String c = parent_list.get(group_position).getCategory();
                     String qString = quantity.getText().toString();
                     int q = (qString.trim().equals("")) ? 1 : Integer.parseInt(qString); // Default quantity value
-                    int done = isDone.isChecked() ? 1 : 0;
+                    // UpdateData at once
+//                int done = isDone.isChecked() ? 1 : 0;
+                    int done;
+                    if (isDone.isChecked()) {
+                        done = 1;
+                        int temp_sum_done = inventory.getDone() + 1;
+                        inventory.setDone(temp_sum_done);
+                    } else {
+                        done = 0;
+                    }
+                    // end UpdateData at once
 
                     Map<String, Object> text_map = new HashMap<>(); // child
                     text_map.put("done", done);
@@ -334,7 +379,12 @@ public class InventoryActivity extends AppCompatActivity {
                     category_map.put(txt, text_map); // ((Long) text_map.get("done")).intValue()
 //                    categories_map.remove(c); // First delete selected category map 重新放一个相同的key,会自动覆盖value的
                     categories_map.put(c, category_map); // Then add new category map with same category string
-                    updateCategoryData();
+                    // UpdateData at once
+//                    updateCategoryData();
+                    int temp_total = inventory.getTotal() + 1;
+                    inventory.setTotal(temp_total);
+                    updateData();
+                    // end UpdateData at once
 
                     ChildData temp_child = new ChildData(txt, q, done); // not need
                     ArrayList<ChildData> temp_child_list = parent_list.get(group_position).getChild_list(); // not need
@@ -421,10 +471,19 @@ public class InventoryActivity extends AppCompatActivity {
         deleteBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                // UpdateData at once
+                int temp_sum_done = inventory.getDone() - parent_list.get(group_position).getDoneCount();
+                int temp_total = inventory.getTotal() - parent_list.get(group_position).getCount();
+                // end UpdateData at once
                 categories_map.remove(parent_list.get(group_position).getCategory()); // remove selected category
 //                parent_list.remove(group_position); // Not need
 //                inventory.setParent_data_list(parent_list);
-                updateCategoryData(); // Update new categories_map to Firestore
+                // UpdateData at once
+//                updateCategoryData(); // Update new categories_map to Firestore
+                inventory.setDone(temp_sum_done);
+                inventory.setTotal(temp_total);
+                updateData();
+                // end UpdateData at once
             }
         });
         deleteBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -506,6 +565,10 @@ public class InventoryActivity extends AppCompatActivity {
                         Log.d(TAG2, "Firestore update error", e);
                     }
                 });
+
+        // UpdateData at once
+        //updateTotalDoneData(inventory.getTotal(), inventory.getDone());
+        // end UpdateData at once
     }
 
     private void initInventory() {
@@ -516,8 +579,12 @@ public class InventoryActivity extends AppCompatActivity {
         inventory.setTripId(bundle.getString("tripId"));
         inventory.setDate(bundle.getString("date"));
         inventory.setTitle(bundle.getString("title"));
-        final int bundle_done = bundle.getInt("done"); // done in inventory would be changed
-        final int bundle_total = bundle.getInt("total"); // done in inventory would be changed
+        // UpdateData at once
+        inventory.setDone(bundle.getInt("done"));
+        inventory.setTotal(bundle.getInt("total"));
+//        final int bundle_done = bundle.getInt("done"); // done in inventory would be changed
+//        final int bundle_total = bundle.getInt("total"); // done in inventory would be changed
+        // end UpdateData at once
 
         this.setTitle(bundle.getString("title"));
 
@@ -586,12 +653,14 @@ public class InventoryActivity extends AppCompatActivity {
                         }
                     }
 
-                    inventory.setParent_data_list(parent_list); // for getting inventory.getTotal/getDone
-                    int inventory_done = inventory.getDone();
-                    int inventory_total = inventory.getTotal();
-                    if ((inventory_done != bundle_done) || (inventory_total != bundle_total)) {
-                        updateTotalDoneData(inventory_total, inventory_done);
-                    }
+                    // UpdateData at once
+//                    inventory.setParent_data_list(parent_list); // for getting inventory.getTotal/getDone
+//                    int inventory_done = inventory.getDone();
+//                    int inventory_total = inventory.getTotal();
+//                    if ((inventory_done != bundle_done) || (inventory_total != bundle_total)) {
+//                        updateTotalDoneData(inventory_total, inventory_done);
+//                    }
+                    // end UpdateData at once
 
                 } else {
                     Log.d(TAG2, "source " + " data: null or not exists");
@@ -618,6 +687,30 @@ public class InventoryActivity extends AppCompatActivity {
                         Log.d(TAG2, "Firestore update error", e);
                     }
                 });
+    }
+
+    // UpdateData at once
+    private void updateData() {
+        db.collection("users").document(inventory.getUserId()).collection("myLists")
+                .document(inventory.getTripId())
+                .update("done", inventory.getDone(),
+                        "total", inventory.getTotal(),
+                        "categories", categories_map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(InventoryActivity.this, "Update Succeeded!",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(InventoryActivity.this, "Failed!",Toast.LENGTH_SHORT).show();
+                        Log.d(TAG2, "Firestore update error", e);
+                    }
+                });
+
+//        delay();
     }
 
     private void setInventory() {
@@ -669,4 +762,11 @@ public class InventoryActivity extends AppCompatActivity {
         myExpandableListAdapter.flashData(parent_list);
     }
 
+    private void delay() {
+        try {
+            Thread.sleep(1000*6);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
