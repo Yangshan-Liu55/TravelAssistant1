@@ -99,10 +99,10 @@ public class WeatherFragment extends Fragment {
 
         //Search bar
         mMaterialSearchBar = itemView.findViewById(R.id.searchBar);
-        mMaterialSearchBar.setEnabled(false);
+        mMaterialSearchBar.setEnabled(true);
 
-        //loads citys from city_list.gz in raw folder
-        new LoadCities().execute();
+        //loads citys from city_list.gz in raw folder för långsam tyvärr
+        //new LoadCities().execute();
 
 
 
@@ -115,7 +115,27 @@ public class WeatherFragment extends Fragment {
         //called to populate our view before entering city name
         checkLocationPermission();
 
+        mMaterialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                //gets weather and forecast by city name
+                getWeatherByCityName(text.toString());
+                getForecastWeatherByCityName(text.toString());
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
+        });
+
         return itemView;
+
     }
 
 
@@ -128,6 +148,7 @@ public class WeatherFragment extends Fragment {
         }
 
     }
+
 
     public boolean checkLocationPermission(){
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -263,7 +284,7 @@ public class WeatherFragment extends Fragment {
 
     }
 
-
+//för långsam
     private class LoadCities extends SimpleAsyncTask<List<String>> {
 
         @Override
