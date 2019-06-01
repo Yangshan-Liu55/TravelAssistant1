@@ -23,6 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import newton.travelassistant.currency.CurrencyAPI;
+import newton.travelassistant.currency.CurrencyAdapter;
+import newton.travelassistant.currency.CurrencyAdd;
+import newton.travelassistant.currency.CurrencyData;
+import newton.travelassistant.currency.FlagAPI;
+
 public class CurrencyFragment extends Fragment {
 
     private ListView listView;
@@ -47,18 +53,19 @@ public class CurrencyFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
             bundle = getArguments().getStringArrayList("key");
             defaultCodes = bundle;
         } else {
-            
+
             defaultCodes.addAll(Arrays.asList("EUR", "USD", "GBP", "NOK"));
         }
         defaultInputCode = "SEK";
         typedText = "0";
-        view = inflater.inflate(R.layout.fragment_currency, container, false );
+        view = inflater.inflate(R.layout.fragment_currency, container, false);
         inputCurrencyValue = view.findViewById(R.id.input_currency_value);
         inputImage = view.findViewById(R.id.input_image);
         inputCurrencyName = view.findViewById(R.id.input_currency_name);
@@ -199,12 +206,10 @@ public class CurrencyFragment extends Fragment {
 //        });
 
 
-
-
         return view;
     }
 
-    protected List<CurrencyData> getData(List<String> currencyCodes, Double equalUSDValue){
+    protected List<CurrencyData> getData(List<String> currencyCodes, Double equalUSDValue) {
 //        Picasso.get().load(flagAPI.getFlagURL("CNY")).into(flag);
 
         List<CurrencyData> list = new ArrayList<>();
@@ -224,7 +229,8 @@ public class CurrencyFragment extends Fragment {
         dataLine.setCurrencyName(currencyCode);
         dataLine.setCurrencyFullName(flagAPI.getCurrencyFullName(currencyCode));
 
-        Double calculatedValue = Double.parseDouble(currencyAPI.getCurrency(currencyCode)) * equalUSDValue;
+        Double calculatedValue =
+                Double.parseDouble(currencyAPI.getCurrency(currencyCode)) * equalUSDValue;
         if (calculatedValue == 0.0) {
             dataLine.setCurrencyValue("0");
         } else {
@@ -249,7 +255,7 @@ public class CurrencyFragment extends Fragment {
     protected Double getEqualUSDValue(String inputText, String CurrencyCode) {
         Double inputValue = Double.parseDouble(inputText);
         Double currentCurrencyValue = Double.parseDouble(currencyAPI.getCurrency(CurrencyCode));
-        equalUSDValue =  inputValue / currentCurrencyValue;
+        equalUSDValue = inputValue / currentCurrencyValue;
         return Double.parseDouble(String.format("%.2f", equalUSDValue));
     }
 

@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 public class CurrencyData {
     private String imgUrl, currencyName, currencyValue, currencyFullName;
@@ -11,8 +11,6 @@ public class CurrencyData {
     }
 
     public CurrencyData() {
-
-
     }
 
     public String getCurrencyName() {

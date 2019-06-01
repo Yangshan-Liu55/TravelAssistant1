@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +16,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import newton.travelassistant.CurrencyFragment;
+import newton.travelassistant.R;
+
 public class CurrencyAdd extends AppCompatActivity {
 
 
-//
-//    private LinearLayout linearLayout;
     private EditText searchBar;
     private ListView currencyList;
     private CurrencyAPI currencyAPI = new CurrencyAPI();
@@ -35,7 +36,7 @@ public class CurrencyAdd extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.currency_add);
         if (savedInstanceState != null) {
@@ -97,7 +98,7 @@ public class CurrencyAdd extends AppCompatActivity {
 
     }
 
-    protected CurrencyData getLine(String currencyCode) {
+    public CurrencyData getLine(String currencyCode) {
         CurrencyData dataLine = new CurrencyData();
         dataLine.setImgUrl(flagAPI.getFlagURL(currencyCode));
         dataLine.setCurrencyName(currencyCode);
@@ -105,7 +106,7 @@ public class CurrencyAdd extends AppCompatActivity {
         return dataLine;
     }
 
-    protected void sendBackData(String addCode) {
+    public void sendBackData(String addCode) {
         Bundle bundle = new Bundle();
         defaultCodes.add(addCode);
         bundle.putStringArrayList("key", (ArrayList<String>) defaultCodes);
@@ -114,7 +115,7 @@ public class CurrencyAdd extends AppCompatActivity {
         finish();
     }
 
-    protected void updateListView(List<String> allKeys) {
+    public void updateListView(List<String> allKeys) {
         ArrayList<CurrencyData> list = new ArrayList<>();
         listViewID = R.layout.currency_add_list;
 

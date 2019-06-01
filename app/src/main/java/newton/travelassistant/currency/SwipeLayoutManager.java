@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 public class SwipeLayoutManager {
 
