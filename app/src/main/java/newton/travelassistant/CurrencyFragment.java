@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -60,6 +61,11 @@ public class CurrencyFragment extends Fragment {
     private String typedText;
     DataHandler dataHandler = new DataHandler();
     private String addCode;
+
+    float historicX = Float.NaN;
+    float historicY = Float.NaN;
+    static final int DELTA = 50;
+
 
 
     @Nullable
@@ -179,6 +185,34 @@ public class CurrencyFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        historicX = event.getX();
+                        historicY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (event.getX() - historicX < -DELTA) {
+//                            Function
+                            Log.e("SWIPE1", "action1");
+                            return true;
+                        } else if (event.getX() - historicX > DELTA) {
+//                            Function
+                            Log.e("SWIPE2", "action2");
+                            return true;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+                return false;
+            }
+        });
+
+
 
 //
 //        final GestureDetector gesture = new GestureDetector(getActivity(),
