@@ -1,5 +1,7 @@
 package newton.travelassistant.currency;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,64 +9,65 @@ import com.google.gson.JsonObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+
+import newton.travelassistant.R;
 
 public class CurrencyAPI {
 
-    private JsonObject savedJsonObject = null;
-    private long savedTimeStamp = 0;
-    public static final String API = "http://apilayer.net/api/live?access_key" +
+    private static final String API = "http://apilayer.net/api/live?access_key" +
             "=07255761cde9523e860e502df81f63cf";
+    private String returnedJsonString;
+    DataHandler dataHandler = new DataHandler();
+    Gson gson = new Gson();
 
-    public JsonObject connection() {
+    public JsonObject connection(Context context) {
 
-        if (savedTimeStamp != 0) {
+        // Try to load local data, if not NULL, and updated in 24 hours, return it
+        String savedData = dataHandler.loadString(context, context.getString(R.string.saved_currency_data));
+        if (savedData != null) {
+            JsonObject obj = gson.fromJson(savedData, JsonElement.class).getAsJsonObject();
+            long savedTimeStamp = obj.get("timestamp").getAsLong();
+
             long currentTimeMillis = System.currentTimeMillis();
-            if (currentTimeMillis / 1000 - savedTimeStamp > 86400) {
-                if (savedJsonObject != null) {
-                    return savedJsonObject;
-                }
+            if (currentTimeMillis / 1000 - savedTimeStamp < 86400) {
+                return obj;
             }
         }
 
 
-//        try {
-//
-//            URL url = new URL(API);
-//            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(),
-//            "ISO-8859-1"));
-//            String file = br.readLine();
-//
-//            Gson gson = new Gson();
-//            JsonElement jsonElement = gson.fromJson(file, JsonElement.class);
-//            JsonObject obj = jsonElement.getAsJsonObject();
-//
-//            JsonElement success = obj.get("success");
-//            boolean isSuccess = success.getAsBoolean();
-//            System.out.println("isSuccess: " + isSuccess);
-//
-//            if (isSuccess) {
-//                savedJsonObject = obj;
-//                savedTimeStamp = obj.get("timestamp").getAsLong();
-//                return obj;
-//            } else {
-//                return null;
-//            }
-//
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
+        // If local data is null, OR data is expired(saved more than 24 hours),
+        // then, Load new data from API, and save it to local data
+        try {
+            returnedJsonString = new LoadOnlineData().execute(API, "currency").get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        dataHandler.saveString(context,context.getString(R.string.saved_currency_data), returnedJsonString);
+
+        // Check if Loading data from API is successful, if do, save also the timeStamp
+        try {
+            JsonObject obj = gson.fromJson(returnedJsonString, JsonElement.class).getAsJsonObject();
+            boolean isSuccess = obj.get("success").getAsBoolean();
+            System.out.println("isSuccess: " + isSuccess);
+
+            if (isSuccess) {
+                dataHandler.saveString(context, context.getString(R.string.saved_time_stamp), String.valueOf(obj.get("timestamp").getAsLong()));
+                return obj;
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return getTempCurrency();
     }
 
-    public String getCurrency(String currencyCode) {
+    public String getCurrency(Context context, String currencyCode) {
 
-        JsonObject obj = connection();
+        JsonObject obj = connection(context);
         if (obj == null) {
             return null;
         }
@@ -75,8 +78,8 @@ public class CurrencyAPI {
         return String.format("%.2f", currencyValue);
     }
 
-    public String getUpdateTime() {
-        JsonObject obj = connection();
+    public String getUpdateTime(Context context) {
+        JsonObject obj = connection(context);
         if (obj == null) {
             return null;
         }

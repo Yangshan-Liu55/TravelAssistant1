@@ -1,6 +1,7 @@
 package newton.travelassistant.currency;
 
-import android.content.Intent;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -13,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +38,24 @@ public class CurrencyAdd extends AppCompatActivity {
     private TextView addCurrencyFullName;
     private List<String> defaultCodes = new ArrayList<>();
     private int listViewID;
-
+    DataHandler dataHandler = new DataHandler();
+    Fragment currencyFragment;
+//    Context context;
+    List<String> allKeys = new ArrayList<>();
+    List<String> userList = new ArrayList<>();
+    String defaultInputCode;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.currency_add);
-        if (savedInstanceState != null) {
-            Intent intent = getIntent();
-            defaultCodes = intent.getStringArrayListExtra("key");
-        }
+
+
+//        if (savedInstanceState != null) {
+//            Intent intent = getIntent();
+//            defaultCodes = intent.getStringArrayListExtra("key");
+//        }
 
         searchBar = findViewById(R.id.currency_search);
         currencyList = findViewById(R.id.add_currency_list);
@@ -51,7 +64,26 @@ public class CurrencyAdd extends AppCompatActivity {
         addCurrencyFullName = findViewById(R.id.add_currency_fullname);
         listViewID = R.layout.currency_add_list;
 
-        List<String> allKeys =  flagAPI.getAllCurrencyCode();
+
+
+        allKeys =  flagAPI.getAllCurrencyCode();
+//        userList = dataHandler.loadList(context, context.getString(R.string.saved_user_currency_list));
+//        defaultInputCode = dataHandler.loadString(context, context.getString(R.string.saved_user_current_code));
+
+        if (defaultInputCode != null) {
+            if (allKeys.contains(defaultInputCode)) {
+                allKeys.remove(allKeys.indexOf(defaultInputCode));
+            }
+        }
+
+        if (userList != null) {
+            for (String ul : userList) {
+                if (allKeys.contains(ul)) {
+                    allKeys.remove(allKeys.indexOf(ul));
+                }
+            }
+        }
+
         updateListView(allKeys);
 
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -90,9 +122,10 @@ public class CurrencyAdd extends AppCompatActivity {
 
                 CurrencyData data = (CurrencyData) parent.getItemAtPosition(position);
                 String addCode = data.getCurrencyName();
-                Log.i("APP5", String.valueOf(addCode));
-                sendBackData(addCode);
-
+                userList.add(addCode);
+                saveNewCode(addCode);
+//                sendBackData(addCode);
+                finish();
             }
         });
 
@@ -126,5 +159,28 @@ public class CurrencyAdd extends AppCompatActivity {
         currencyList.setAdapter(addAdapter);
     }
 
+    public void saveNewCode(String addCode) {
+        FileOutputStream outputStream = null;
+        BufferedWriter bufferedWriter = null;
+
+        try {
+            outputStream = openFileOutput("add_code", Context.MODE_PRIVATE);
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            bufferedWriter.write(addCode);
+            Log.i("ADDCODE", addCode);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 }
