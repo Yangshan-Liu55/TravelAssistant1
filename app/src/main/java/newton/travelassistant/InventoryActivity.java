@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -52,7 +54,7 @@ public class InventoryActivity extends AppCompatActivity {
         myExpandableListAdapter = new MyExpandableListAdapter(this, parent_list);
         myExListView = (ExpandableListView) findViewById(R.id.expandable_list);
         myExListView.setAdapter(myExpandableListAdapter);
-        initInventory();
+        initInventory2(); // Fix crash
         this.registerForContextMenu(myExListView); // Register context menu
 
         // Parent item click event
@@ -91,6 +93,18 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // Fix crash // updateData to Firestore when click the back button of the phone
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // Do something.
+            updateData();
+            startActivity(new Intent(InventoryActivity.this, MainActivity.class));
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -185,11 +199,13 @@ public class InventoryActivity extends AppCompatActivity {
         categories_map.put(selected_category, category_map); // Then add new category map with old category string
         // UpdateData at once
         //updateCategoryData(); // Update modified category to Firestore
-        updateData();
+//        updateData(); // Fix crash
+        parent_list.get(i).getChild_list().get(i1).setDone(done); // new done value // Fix crash
+        updateChildListView(i); // Fix crash
         // end UpdateData at once
     }
 
-    private void deleteItem(final int group_position, int child_position) {
+    private void deleteItem(final int group_position, final int child_position) {
         final String selected_category = parent_list.get(group_position).getCategory();
         ChildData child = parent_list.get(group_position).getChild_list().get(child_position);
         final String selected_text = child.getText();
@@ -215,7 +231,9 @@ public class InventoryActivity extends AppCompatActivity {
 
                 // UpdateData at once
 //                updateCategoryData(); // Update new categories_map to Firestore
-                updateData();// UpdateData at once
+//                updateData();// UpdateData at once
+                parent_list.get(group_position).getChild_list().remove(child_position); // delete item // Fix crash
+                updateChildListView(group_position); // Fix crash
                 // end UpdateData at once
             }
         });
@@ -228,7 +246,7 @@ public class InventoryActivity extends AppCompatActivity {
         deleteBuilder.show();
     }
 
-    private void editItem(final int group_position, int child_position) {
+    private void editItem(final int group_position, final int child_position) {
         final AlertDialog.Builder editBuilder = new AlertDialog.Builder(InventoryActivity.this);
         editBuilder.setIcon(R.drawable.ic_edit_black_24dp);
         editBuilder.setTitle("EDIT ITEM");
@@ -298,7 +316,12 @@ public class InventoryActivity extends AppCompatActivity {
                     categories_map.put(selected_category, category_map); // Then add new category map with old category string
                     // UpdateData at once
 //                    updateCategoryData(); // Update modified category to Firestore
-                    updateData();
+//                    updateData();
+                    // Fix crash
+                    ChildData temp_child = new ChildData(txt, q, done);
+                    parent_list.get(group_position).getChild_list().remove(child_position); // delete old one
+                    parent_list.get(group_position).getChild_list().add(child_position, temp_child); // insert new one
+                    updateChildListView(group_position); // End Fix crash
                     // end UpdateData at once
                 }
             }
@@ -383,13 +406,12 @@ public class InventoryActivity extends AppCompatActivity {
 //                    updateCategoryData();
                     int temp_total = inventory.getTotal() + 1;
                     inventory.setTotal(temp_total);
-                    updateData();
+//                    updateData();
+                    // Fix crash
+                    ChildData temp_child = new ChildData(txt, q, done);
+                    parent_list.get(group_position).getChild_list().add(temp_child); // add new item
+                    updateChildListView(group_position); // End Fix crash
                     // end UpdateData at once
-
-                    ChildData temp_child = new ChildData(txt, q, done); // not need
-                    ArrayList<ChildData> temp_child_list = parent_list.get(group_position).getChild_list(); // not need
-                    temp_child_list.add(temp_child); // not need
-                    parent_list.get(group_position).setChild_list(temp_child_list); // not need
                 }
             }
         });
@@ -442,7 +464,9 @@ public class InventoryActivity extends AppCompatActivity {
                     categories_map.remove(selected_category); // First delete selected category and its child
                     categories_map.put(c, temp_category_map); // Then add new category string with old category map
                     parent_list.get(group_position).setCategory(c); // change the category string
-                    updateCategoryData(); // Update modified category to Firestore
+//                    updateCategoryData(); // Update modified category to Firestore // updateData at once
+//                    updateData(); // updateData at once // Fix crash
+                    updateGroupListView(); // Fix crash
                 }
             }
         });
@@ -482,7 +506,9 @@ public class InventoryActivity extends AppCompatActivity {
 //                updateCategoryData(); // Update new categories_map to Firestore
                 inventory.setDone(temp_sum_done);
                 inventory.setTotal(temp_total);
-                updateData();
+//                updateData(); // Fix crash
+                parent_list.remove(group_position); // delete the category
+                updateGroupListView(); // Fix crash
                 // end UpdateData at once
             }
         });
@@ -535,7 +561,12 @@ public class InventoryActivity extends AppCompatActivity {
                 } else {
                     Map<String, Object> category_map = new HashMap<>(); // parent
                     categories_map.put(c, category_map); // Add a category to categories_map
-                    updateCategoryData(); // Update new categories_map to Firestore
+//                    updateCategoryData(); // Update new categories_map to Firestore // updateData at once
+//                    updateData(); // Fix crash
+                    ArrayList<ChildData> temp_child_list = new ArrayList<>();
+                    ParentData temp_parent = new ParentData(c, temp_child_list, 0, 0);
+                    parent_list.add(temp_parent); // add new category
+                    updateGroupListView(); // End Fix crash
                 }
             }
         });
@@ -549,6 +580,7 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     private void updateCategoryData() {
+        db = FirebaseFirestore.getInstance(); // db = null courses CurrentActivity crash
         db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .update("categories", categories_map)
@@ -669,7 +701,56 @@ public class InventoryActivity extends AppCompatActivity {
         });
     }
 
+    // Fix crash
+    private void initInventory2() {
+        categories_map.clear();
+        //        Bundle bundle = getIntent().getBundleExtra("inventoryBundle");
+        Bundle bundle = getIntent().getExtras();
+        inventory.setUser(bundle.getString("user"));
+        inventory.setUserId(bundle.getString("userId"));
+        inventory.setTripId(bundle.getString("tripId"));
+        inventory.setDate(bundle.getString("date"));
+        inventory.setTitle(bundle.getString("title"));
+        inventory.setDone(bundle.getInt("done"));
+        inventory.setTotal(bundle.getInt("total"));
+        List<Map<String, Object>> mapList = (List<Map<String, Object>>) bundle.getSerializable("categories_map");
+        categories_map = mapList.get(0);
+        inventory.setCategories_map(categories_map);
+        inventory.setParent_data_listFromCategories_map(categories_map);
+
+        this.setTitle(bundle.getString("title"));
+
+        if (parent_list == null) {
+            parent_list = new ArrayList<>();
+        }
+
+        parent_list.clear();
+        myExpandableListAdapter.flashData(parent_list);
+
+        parent_list = inventory.getParent_data_list();
+
+        myExpandableListAdapter.flashData(parent_list); // same myExpandableListAdapter.notifyDataSetChanged();
+        // Expand all group items
+        int groupCount = myExListView.getCount();
+        if (groupCount > 0) {
+            for (int i = 0; i < groupCount; i++) {
+                myExListView.expandGroup(i);
+            }
+        }
+    }
+
+    private void updateGroupListView() {
+        myExpandableListAdapter.flashData(parent_list);
+    }
+
+    private void updateChildListView(int groupPosition) {
+        myExListView.collapseGroup(groupPosition);
+        myExListView.expandGroup(groupPosition);
+    }
+    // End Fix crash
+
     private void updateTotalDoneData(int total, int done) {
+        db = FirebaseFirestore.getInstance(); // db = null courses CurrentActivity crash
         db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .update("done", done,
@@ -691,6 +772,7 @@ public class InventoryActivity extends AppCompatActivity {
 
     // UpdateData at once
     private void updateData() {
+        db = FirebaseFirestore.getInstance(); // db = null causes CurrentActivity crash
         db.collection("users").document(inventory.getUserId()).collection("myLists")
                 .document(inventory.getTripId())
                 .update("done", inventory.getDone(),

@@ -4,8 +4,19 @@ import java.util.ArrayList;
 
 public class ParentData {
     private String category;
-    private ArrayList<ChildData>  child_list; //优雅X
+    private ArrayList<ChildData>  child_list;
     private int count, doneCount;
+
+    // Constructors
+    public ParentData() {
+    }
+
+    public ParentData(String category, ArrayList<ChildData> child_list, int count, int doneCount) {
+        this.category = category;
+        this.child_list = child_list;
+        this.count = count;
+        this.doneCount = doneCount;
+    }
 
     // Getters
     public String getCategory() {

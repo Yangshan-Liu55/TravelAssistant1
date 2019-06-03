@@ -54,6 +54,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -192,6 +193,11 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("title", inventory.getTitle());
                 bundle.putInt("done", inventory.getDone());
                 bundle.putInt("total", inventory.getTotal());
+                // Fix crash
+                List<Map<String, Object>> mapList = new ArrayList<>();
+                mapList.add(inventory.getCategories_map());
+                bundle.putSerializable("categories_map", (Serializable) mapList);
+                // End Fix crash
 //                intent.putExtra("inventoryBundle", bundle);
                 intent.putExtras(bundle);
 
@@ -554,6 +560,8 @@ public class MainActivity extends AppCompatActivity {
                             temp_inventory.setTitle((String) document_map.get("title"));
                             temp_inventory.setTotal(((Long) document_map.get("total")).intValue());
                             temp_inventory.setDone(((Long) document_map.get("done")).intValue());
+                            temp_inventory.setCategories_map((Map<String, Object>) document_map.get("categories")); // Fix crash
+                            temp_inventory.setParent_data_listFromCategories_map((Map<String, Object>) document_map.get("categories")); // Fix crash
 
                             switch (dc.getType()) {
                                 case ADDED:
