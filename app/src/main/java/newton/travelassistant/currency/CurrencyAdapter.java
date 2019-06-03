@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+
+import newton.travelassistant.R;
 
 public class CurrencyAdapter extends ArrayAdapter<CurrencyData> {
 

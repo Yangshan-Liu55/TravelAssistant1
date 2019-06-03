@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
@@ -111,7 +111,7 @@ public class SwipeLayout extends FrameLayout {
     }
 
 
-    private ViewDragHelper.Callback callback = new ViewDragHelper.Callback() {
+    public ViewDragHelper.Callback callback = new ViewDragHelper.Callback() {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {

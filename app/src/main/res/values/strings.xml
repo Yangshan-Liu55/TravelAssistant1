@@ -12,4 +12,11 @@
     <string name="title_locator">Locator app</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="saved_currency_data">currency</string>
+    <string name="saved_time_stamp">time_tamp</string>
+    <string name="saved_user_currency_list">user_list</string>
+    <string name="saved_user_current_code">current_code</string>
+    <string name="saved_user_current_value">current_value</string>
+
+
 </resources>

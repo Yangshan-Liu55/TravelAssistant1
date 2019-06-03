@@ -1,4 +1,4 @@
-package newton.travelassistant;
+package newton.travelassistant.currency;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import newton.travelassistant.R;
 
 public class CurrencyAddAdapter extends ArrayAdapter<CurrencyData> implements Filterable {
 
@@ -64,7 +66,7 @@ public class CurrencyAddAdapter extends ArrayAdapter<CurrencyData> implements Fi
         final Filter filter = new Filter() {
 
             @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
+            public FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
                 List<String> filteredArrayNames = new ArrayList<>();
 
@@ -82,7 +84,7 @@ public class CurrencyAddAdapter extends ArrayAdapter<CurrencyData> implements Fi
             }
 
             @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            public void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 filteredList = (List<String>) filterResults.values;
 //                notifyDataSetInvalidated();
                 notifyDataSetChanged();
