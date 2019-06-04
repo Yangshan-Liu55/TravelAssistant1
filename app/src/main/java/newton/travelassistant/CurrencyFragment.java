@@ -196,7 +196,12 @@ public class CurrencyFragment extends Fragment {
                         break;
                     case MotionEvent.ACTION_UP:
                         if (event.getX() - historicX < -DELTA) {
-//                            Function
+                            int position = listView.pointToPosition((int) historicX, (int) historicY);
+                            defaultCodes.remove(position);
+
+                            updateListView(equalUSDValue);
+                            setInputBox(view, defaultInputCode);
+                            Log.e("SWIPE1", String.valueOf(position));
                             Log.e("SWIPE1", "action1");
                             return true;
                         } else if (event.getX() - historicX > DELTA) {
@@ -211,75 +216,6 @@ public class CurrencyFragment extends Fragment {
                 return false;
             }
         });
-
-
-
-//
-//        final GestureDetector gesture = new GestureDetector(getActivity(),
-//                new GestureDetector.SimpleOnGestureListener() {
-//
-//                    @Override
-//                    public boolean onDown(MotionEvent e) {
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-//                                           float velocityY) {
-//                        Log.i("MyApp", "Fling called");
-//                        final int SWIPE_MIN_DISTANCE = 120;
-//                        final int SWIPE_MAX_OFF_PATH = 250;
-//                        final int SWIPE_THRESHOLD_VELOCITY = 200;
-//                        try {
-//                            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-//                                return false;
-//                            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-//                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-//                                Log.i("MyApp", "Right to Left");
-//                            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-//                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-//                                Log.i("MyApp", "Left to Right");
-//                            }
-//                        } catch (Exception e) {
-//
-//                        }
-//                        return super.onFling(e1, e2, velocityX, velocityY);
-//                    }
-//
-////                    @Override
-////                    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-////                                            float distanceY) {
-////                        SwipeLayoutManager.getInstance().closeCurrentLayout();
-////                        return super.onScroll(e1, e2, distanceX, distanceY);
-////                    }
-//
-//
-//                });
-//
-//
-//        listView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                return gesture.onTouchEvent(motionEvent);
-//            }
-//        });
-//
-//
-//
-//        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView absListView, int i) {
-//                if (i == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-//                    SwipeLayoutManager.getInstance().closeCurrentLayout();
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-//
-//            }
-//        });
-
 
         return view;
     }
@@ -323,6 +259,9 @@ public class CurrencyFragment extends Fragment {
         list = getData(currencyCodes, equalUSDValue);
         currencyAdapter = new CurrencyAdapter(getActivity(), R.layout.currency_list, list);
         listView.setAdapter(currencyAdapter);
+
+        dataHandler.saveList(getActivity(), getActivity().getString(R.string.saved_user_currency_list), currencyCodes);
+        dataHandler.saveString(getActivity(), getActivity().getString(R.string.saved_user_current_code), defaultInputCode);
     }
 
     protected Double getEqualUSDValue(String inputText, String CurrencyCode) {

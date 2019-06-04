@@ -40,7 +40,7 @@ public class CurrencyAdd extends AppCompatActivity {
     private int listViewID;
     DataHandler dataHandler = new DataHandler();
     Fragment currencyFragment;
-//    Context context;
+    //    Context context;
     List<String> allKeys = new ArrayList<>();
     List<String> userList = new ArrayList<>();
     String defaultInputCode;
@@ -65,10 +65,11 @@ public class CurrencyAdd extends AppCompatActivity {
         listViewID = R.layout.currency_add_list;
 
 
-
-        allKeys =  flagAPI.getAllCurrencyCode();
-//        userList = dataHandler.loadList(context, context.getString(R.string.saved_user_currency_list));
-//        defaultInputCode = dataHandler.loadString(context, context.getString(R.string.saved_user_current_code));
+        allKeys = flagAPI.getAllCurrencyCode();
+//        userList = dataHandler.loadList(context, context.getString(R.string
+//        .saved_user_currency_list));
+//        defaultInputCode = dataHandler.loadString(context, context.getString(R.string
+//        .saved_user_current_code));
 
         if (defaultInputCode != null) {
             if (allKeys.contains(defaultInputCode)) {
@@ -93,15 +94,30 @@ public class CurrencyAdd extends AppCompatActivity {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence charSequence, int i0, int i1, int i2) {
 //                Log.i("TYPE IN: ", String.valueOf(charSequence));
 //                CurrencyAdd.this.addAdapter.getFilter().filter(charSequence);
+                ArrayList<String> newList = new ArrayList<>();
+//                String searchString = searchBar.getText().toString().trim();
+                String searchString = charSequence.toString();
+                if (searchString.length() > 0) {
+                    for (int i = 0; i < allKeys.size(); i++) {
+                        String currentString = allKeys.get(i);
+                        if (searchString.equalsIgnoreCase(currentString)) {
+                            newList.add(allKeys.get(i));
+                        }
+                    }
+                    updateListView(newList);
+
+                } else {
+                    updateListView(allKeys);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                Log.i("TYPE IN after: ", String.valueOf(editable));
-                CurrencyAdd.this.addAdapter.getFilter().filter(editable);
+//                Log.i("TYPE IN after: ", String.valueOf(editable));
+//                CurrencyAdd.this.addAdapter.getFilter().filter(editable);
             }
         });
 
