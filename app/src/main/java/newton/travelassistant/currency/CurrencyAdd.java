@@ -90,20 +90,21 @@ public class CurrencyAdd extends AppCompatActivity {
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i0, int i1, int i2) {
-//                Log.i("TYPE IN: ", String.valueOf(charSequence));
-//                CurrencyAdd.this.addAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
                 ArrayList<String> newList = new ArrayList<>();
-//                String searchString = searchBar.getText().toString().trim();
-                String searchString = charSequence.toString();
+                String searchString = editable.toString();
                 if (searchString.length() > 0) {
                     for (int i = 0; i < allKeys.size(); i++) {
                         String currentString = allKeys.get(i);
-                        if (searchString.equalsIgnoreCase(currentString)) {
+                        String nameString = new FlagAPI().getCurrencyFullName(currentString).toLowerCase();
+                        if (currentString.contains(searchString.toUpperCase()) || nameString.contains(searchString.toLowerCase())) {
                             newList.add(allKeys.get(i));
                         }
                     }
@@ -112,12 +113,6 @@ public class CurrencyAdd extends AppCompatActivity {
                 } else {
                     updateListView(allKeys);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-//                Log.i("TYPE IN after: ", String.valueOf(editable));
-//                CurrencyAdd.this.addAdapter.getFilter().filter(editable);
             }
         });
 
