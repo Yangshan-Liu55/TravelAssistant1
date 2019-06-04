@@ -84,22 +84,12 @@ public class CurrencyFragment extends Fragment {
         List<String> userList = dataHandler.loadList(this.getActivity(), this.getActivity().getString(R.string.saved_user_currency_list));
         if (userList != null) {
             // Check duplications
-            Set<String> set = new HashSet<>(userList);
-            if (set.size() < userList.size()) {
-                userList.clear();
-                userList.addAll(set);
-            }
-            if (userList.contains(defaultInputCode)) {
-                userList.remove(userList.indexOf(defaultInputCode));
-            }
-            defaultCodes = userList;
+            defaultCodes = checkDuplication(defaultInputCode, userList);
         } else {
             defaultCodes.addAll(Arrays.asList("EUR", "USD", "GBP", "NOK"));
-            if (defaultCodes.contains(defaultInputCode)) {
-                defaultCodes.remove(defaultCodes.indexOf(defaultInputCode));
-            }
-            dataHandler.saveList(this.getActivity(), this.getActivity().getString(R.string.saved_user_currency_list), defaultCodes);
+            defaultCodes = checkDuplication(defaultInputCode, defaultCodes);
         }
+        dataHandler.saveList(this.getActivity(), this.getActivity().getString(R.string.saved_user_currency_list), defaultCodes);
 
         String currentValue = dataHandler.loadString(this.getActivity(), this.getActivity().getString(R.string.saved_user_current_value));
         if (currentValue != null) {
@@ -119,8 +109,8 @@ public class CurrencyFragment extends Fragment {
 
         currencyCodes = defaultCodes;
 
-        updateListView(null);
-        setInputBox(view, defaultInputCode);
+//        updateListView(null);
+//        setInputBox(view, defaultInputCode);
 
         // interaction part
         inputCurrencyValue.addTextChangedListener(new TextWatcher() {
@@ -139,11 +129,11 @@ public class CurrencyFragment extends Fragment {
                 Log.i("APP", editable.toString());
                 inputText = editable.toString();
                 try {
-                    equalUSDValue = getEqualUSDValue(inputText, defaultInputCode);
+                    equalUSDValue = Double.parseDouble(getEqualUSDValue(inputText, defaultInputCode));
                 } catch (Exception e) {
                     equalUSDValue = 0.0;
                 }
-                updateListView(equalUSDValue);
+                updateListView(currencyCodes, equalUSDValue);
                 typedText = inputText;
                 dataHandler.saveString(getActivity(), getActivity().getString(R.string.saved_user_current_value), typedText);
 
@@ -169,8 +159,8 @@ public class CurrencyFragment extends Fragment {
                 currencyCodes.set(position, defaultInputCode);
                 defaultInputCode = data.getCurrencyName();
 
-                equalUSDValue = getEqualUSDValue(typedText, defaultInputCode);
-                updateListView(equalUSDValue);
+                equalUSDValue = Double.parseDouble(getEqualUSDValue(typedText, defaultInputCode));
+                updateListView(currencyCodes, equalUSDValue);
                 setInputBox(view, defaultInputCode);
                 dataHandler.saveList(getActivity(), getActivity().getString(R.string.saved_user_currency_list), currencyCodes);
                 dataHandler.saveString(getActivity(), getActivity().getString(R.string.saved_user_current_code), defaultInputCode);
@@ -199,7 +189,7 @@ public class CurrencyFragment extends Fragment {
                             int position = listView.pointToPosition((int) historicX, (int) historicY);
                             defaultCodes.remove(position);
 
-                            updateListView(equalUSDValue);
+                            updateListView(currencyCodes, equalUSDValue);
                             setInputBox(view, defaultInputCode);
                             Log.e("SWIPE1", String.valueOf(position));
                             Log.e("SWIPE1", "action1");
@@ -243,7 +233,7 @@ public class CurrencyFragment extends Fragment {
         if (calculatedValue == 0.0) {
             dataLine.setCurrencyValue("0");
         } else {
-            dataLine.setCurrencyValue(calculatedValue.toString());
+            dataLine.setCurrencyValue(String.format("%.2f", calculatedValue));
         }
 
         return dataLine;
@@ -255,20 +245,22 @@ public class CurrencyFragment extends Fragment {
         inputCurrencyFullName.setText(flagAPI.getCurrencyFullName(currencyCode));
     }
 
-    protected void updateListView(Double equalUSDValue) {
-        list = getData(currencyCodes, equalUSDValue);
+    protected void updateListView(List<String> codesList, Double equalUSDValue) {
+        list = getData(codesList, equalUSDValue);
         currencyAdapter = new CurrencyAdapter(getActivity(), R.layout.currency_list, list);
         listView.setAdapter(currencyAdapter);
 
-        dataHandler.saveList(getActivity(), getActivity().getString(R.string.saved_user_currency_list), currencyCodes);
+        dataHandler.saveList(getActivity(), getActivity().getString(R.string.saved_user_currency_list), codesList);
         dataHandler.saveString(getActivity(), getActivity().getString(R.string.saved_user_current_code), defaultInputCode);
     }
 
-    protected Double getEqualUSDValue(String inputText, String CurrencyCode) {
+    protected String getEqualUSDValue(String inputText, String CurrencyCode) {
         Double inputValue = Double.parseDouble(inputText);
         Double currentCurrencyValue = Double.parseDouble(currencyAPI.getCurrency(this.getActivity(), CurrencyCode));
         equalUSDValue = inputValue / currentCurrencyValue;
-        return Double.parseDouble(String.format("%.2f", equalUSDValue));
+
+        return equalUSDValue.toString();
+//                String.format("%.2f", equalUSDValue);
     }
 
     public String loadNewCode() {
@@ -300,18 +292,37 @@ public class CurrencyFragment extends Fragment {
 
     }
 
+    public List<String> checkDuplication(String s, List<String> list) {
+
+        // Check Duplications
+        Set<String> set = new HashSet<>(list);
+        if (set.size() < list.size()) {
+            list.clear();
+            list.addAll(set);
+        }
+
+        // Check if contains
+        if (list.contains(s)) {
+            list.remove(list.indexOf(s));
+        }
+
+        return list;
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         Log.i("Check:", String.valueOf(currencyCodes));
         addCode = loadNewCode();
         Log.i("ADDCODE", addCode);
-        currencyCodes.add(addCode);
+        if (addCode != null && !addCode.equals("")) {
+            currencyCodes.add(addCode);
+//            currencyCodes = checkDuplication(addCode, currencyCodes);
+        }
 
-        updateListView(equalUSDValue);
+        updateListView(currencyCodes, equalUSDValue);
         setInputBox(view, defaultInputCode);
     }
-
 
     @Override
     public void onDestroy() {

@@ -22,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import newton.travelassistant.CurrencyFragment;
 import newton.travelassistant.R;
 
 public class CurrencyAdd extends AppCompatActivity {
@@ -50,12 +49,6 @@ public class CurrencyAdd extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.currency_add);
-
-
-//        if (savedInstanceState != null) {
-//            Intent intent = getIntent();
-//            defaultCodes = intent.getStringArrayListExtra("key");
-//        }
 
         searchBar = findViewById(R.id.currency_search);
         currencyList = findViewById(R.id.add_currency_list);
@@ -136,6 +129,7 @@ public class CurrencyAdd extends AppCompatActivity {
                 userList.add(addCode);
                 saveNewCode(addCode);
 //                sendBackData(addCode);
+//                turnBackToFragment();
                 finish();
             }
         });
@@ -150,14 +144,20 @@ public class CurrencyAdd extends AppCompatActivity {
         return dataLine;
     }
 
-    public void sendBackData(String addCode) {
-        Bundle bundle = new Bundle();
-        defaultCodes.add(addCode);
-        bundle.putStringArrayList("key", (ArrayList<String>) defaultCodes);
-        CurrencyFragment cf = new CurrencyFragment();
-        cf.setArguments(bundle);
-        finish();
-    }
+//    public void turnBackToFragment() {
+//        android.support.v4.app.Fragment fragment = new CurrencyFragment();
+//        FragmentManager manager = getSupportFragmentManager();
+//        manager.beginTransaction().replace(R.id.frameLayout_currency, fragment).commit();
+//    }
+
+//    public void sendBackData(String addCode) {
+//        Bundle bundle = new Bundle();
+//        defaultCodes.add(addCode);
+//        bundle.putStringArrayList("key", (ArrayList<String>) defaultCodes);
+//        CurrencyFragment cf = new CurrencyFragment();
+//        cf.setArguments(bundle);
+//        finish();
+//    }
 
     public void updateListView(List<String> allKeys) {
         ArrayList<CurrencyData> list = new ArrayList<>();

@@ -51,7 +51,7 @@
 
     <EditText
         android:id="@+id/input_currency_value"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:hint="0"
         android:maxLength="6"
         android:imeOptions="actionDone"
